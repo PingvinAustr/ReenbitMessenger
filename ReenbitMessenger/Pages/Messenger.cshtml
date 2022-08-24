@@ -1,0 +1,92 @@
+﻿@page 
+@model ReenbitMessenger.Pages.IndexModel
+@{
+    Layout = null;
+}
+
+
+<head>
+    <title>Messenger</title>
+    <link rel="stylesheet" href=~/css/site.css />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+   
+</head>
+<body>
+   <div class="main-container">
+       <div class="left-part">
+           <div class="left-part-head">
+
+              <hr />
+           </div>
+           <div class="left-part-groups">
+               <div class="chat-item">
+                   1
+               </div>
+               <div class="chat-item">
+                   2
+               </div>
+                <div class="chat-item">
+                   3
+               </div>
+                <div class="chat-item">
+                   4
+               </div>
+                <div class="chat-item">
+                   5
+               </div>
+               <div class="chat-item">
+                   5
+               </div>
+               <div class="chat-item">
+                   5
+               </div>
+               <div class="chat-item">
+                   5
+               </div>
+           </div>
+
+           <div class="left-part-direct">
+               <div class="chat-item">
+                   1
+               </div>
+               <div class="chat-item">
+                   2
+               </div>
+                <div class="chat-item">
+                   3
+               </div>
+                <div class="chat-item">
+                   4
+               </div>
+                <div class="chat-item">
+                   5
+               </div>
+               <div class="chat-item">
+                   5
+               </div>
+               <div class="chat-item">
+                   5
+               </div>
+               <div class="chat-item">
+                   5
+               </div>
+           </div>
+       </div>
+       <div class="right-part">
+           <div class="right-part-head">
+               <div class="user_name_avatar"> 
+                   <img src="~/user_avatars/@ViewData["current_user_avatar"]" />
+               <p class="active-user-name">@ViewData["current_user_name"]</p>
+               </div>
+           </div>
+           <div class="right-part-chat-window">
+
+           </div>
+           <div class="right-part-write-tools">
+
+           </div>
+       </div>
+   </div>
+</body>

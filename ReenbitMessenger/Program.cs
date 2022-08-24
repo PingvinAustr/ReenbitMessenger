@@ -47,35 +47,35 @@ static void AddCustomerData(WebApplication app)
     {
         Name = "Tom",
         Surname = "Tomson",
-        UserAvatarImage = "1"
+        UserAvatarImage = "man.png"
 
     };
     User user2 = new User
     {
         Name = "Bob",
         Surname = "Bobson",
-        UserAvatarImage = "2"
+        UserAvatarImage = "profile.png"
     };
 
     User user3 = new User
     {
         Name = "Bill",
         Surname = "Billson",
-        UserAvatarImage = "3"
+        UserAvatarImage = "user.png"
     };
 
     User user4 = new User
     {
         Name = "Jack",
         Surname = "Jackson",
-        UserAvatarImage = "4"
+        UserAvatarImage = "userMan.png"
     };
 
     User user5 = new User
     {
         Name = "Helen",
         Surname = "helenson",
-        UserAvatarImage = "5"
+        UserAvatarImage = "woman.png"
     };
 
 
@@ -122,7 +122,7 @@ static void AddCustomerData(WebApplication app)
     usersChats5.Chat = chat2;
 
     UsersChats usersChats6 = new UsersChats();
-    usersChats6.UserId = 45;
+    usersChats6.UserId = 5;
     usersChats6.ChatId = 1;
     usersChats6.User = user5;
     usersChats6.Chat = chat1;
