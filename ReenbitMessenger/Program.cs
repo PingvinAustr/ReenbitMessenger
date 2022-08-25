@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ReenbitMessenger.DataAccess;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,21 +56,21 @@ static void AddCustomerData(WebApplication app)
     {
         Name = "Bob",
         Surname = "Bobson",
-        UserAvatarImage = "profile.png"
+        UserAvatarImage = "man1.png"
     };
 
     User user3 = new User
     {
-        Name = "Bill",
+        Name = "Jango",
         Surname = "Billson",
-        UserAvatarImage = "user.png"
+        UserAvatarImage = "man_dark.png"
     };
 
     User user4 = new User
     {
-        Name = "Jack",
-        Surname = "Jackson",
-        UserAvatarImage = "userMan.png"
+        Name = "Mary",
+        Surname = "Maryson",
+        UserAvatarImage = "woman1.png"
     };
 
     User user5 = new User
@@ -78,7 +80,12 @@ static void AddCustomerData(WebApplication app)
         UserAvatarImage = "woman.png"
     };
 
-
+    User user6 = new User
+    {
+        Name = "Svyatoslav",
+        Surname = "Perepolochenskiy",
+        UserAvatarImage = "woman1.png"
+    };
 
     Chats chat1 = new Chats
     {
@@ -91,48 +98,101 @@ static void AddCustomerData(WebApplication app)
 
     };
 
-    UsersChats usersChat1 = new UsersChats();
+    Chats direct_chat3 = new Chats
+    {
+        ChatName = "DirectChat3"
+    };
+
+    Chats direct_chat4 = new Chats
+    {
+        ChatName = "DirectChat4"
+    };
+
+    Chats direct_chat5 = new Chats
+    {
+        ChatName = "DirectChat5"
+    };
+
+    Chats direct_chat6 = new Chats
+    {
+        ChatName = "DirectChat6"
+    };
+
+   
+
+
+    UsersChats userschats_direct1 = new UsersChats() { UserId=1,User=user1,ChatId=3,Chat=direct_chat3 }; //Tom - 3 - DM
+    UsersChats userschats_direct2 = new UsersChats() { UserId=2,User=user2,ChatId=3,Chat=direct_chat3 }; //Bob - 3 - DM
+
+    UsersChats userschats_direct3 = new UsersChats() { UserId = 2, User = user2, ChatId = 4, Chat = direct_chat4 }; //Bob - 4 - DM
+    UsersChats userschats_direct4 = new UsersChats() { UserId = 5, User = user5, ChatId = 4, Chat = direct_chat4 }; //Helen - 4 - DM
+
+    UsersChats userschats_direct5 = new UsersChats() { UserId = 3, User = user3, ChatId = 5, Chat = direct_chat5 }; //Bill - 5 - DM
+    UsersChats userschats_direct6 = new UsersChats() { UserId = 5, User = user5, ChatId = 5, Chat = direct_chat5 }; //Helen - 5 - DM
+
+    UsersChats userschats_direct7 = new UsersChats() { UserId = 3, User = user3, ChatId = 6, Chat = direct_chat6 }; //Bill - 6 - DM
+    UsersChats userschats_direct8 = new UsersChats() { UserId = 1, User = user1, ChatId = 6, Chat = direct_chat6 }; //Tom - 6 - DM
+
+
+
+    Chats group_all_chat = new Chats
+    {
+        ChatName = "All guys here :)"
+    };
+    UsersChats all_users_chat1 = new UsersChats() {UserId=1,User=user1,ChatId=7,Chat=group_all_chat }; //Tom - 7 - All guys here :) chat
+    UsersChats all_users_chat2 = new UsersChats() {UserId=2,User=user2,ChatId=7,Chat=group_all_chat }; //Bob - 7 - All guys here :) chat
+    UsersChats all_users_chat3 = new UsersChats() {UserId=3,User=user3,ChatId=7,Chat=group_all_chat }; //Bill - 7 - All guys here :) chat
+    UsersChats all_users_chat4 = new UsersChats() {UserId=4,User=user4,ChatId=7,Chat=group_all_chat }; //Jack - 7 - All guys here :) chat
+    UsersChats all_users_chat5 = new UsersChats() {UserId=5,User=user5,ChatId=7,Chat=group_all_chat }; //Helen - 7 - All guys here :) chat
+    UsersChats all_users_chat6 = new UsersChats() {UserId=6,User=user6,ChatId=7,Chat=group_all_chat }; //Svyatoslav - 7 - All guys here :) chat
+    
+
+    Chats direct_chat7 = new Chats
+    {
+        ChatName = "DirectChat7"
+    };
+    UsersChats userschats_direct9 = new UsersChats() { UserId = 1, User = user1, ChatId = 8, Chat = direct_chat7 }; //Tom - 8 - DM
+    UsersChats userschats_direct10 = new UsersChats() { UserId = 4, User = user4, ChatId = 8, Chat = direct_chat7 };//Jack - 8 - DM
+
+
+
+    UsersChats usersChat1 = new UsersChats(); //Tom - 1 - MathChat (Tom and Helen DM)
     usersChat1.UserId = 1;
     usersChat1.ChatId = 1;
     usersChat1.User = user1;
     usersChat1.Chat = chat1;
 
-    UsersChats usersChats2 = new UsersChats();
+    UsersChats usersChats2 = new UsersChats(); //Tom - 2 - ProgrammingChat
     usersChats2.UserId = 1;
     usersChats2.ChatId = 2;
     usersChats2.User = user1;
     usersChats2.Chat = chat2;
 
-    UsersChats usersChats3 = new UsersChats();
+    UsersChats usersChats3 = new UsersChats(); //Bob - 2 - ProgrammingChat
     usersChats3.UserId = 2;
     usersChats3.ChatId = 2;
     usersChats3.User = user2;
     usersChats3.Chat = chat2;
 
-    UsersChats usersChats4 = new UsersChats();
+    UsersChats usersChats4 = new UsersChats(); //Bill - 2 - ProgrammingChat
     usersChats4.UserId = 3;
     usersChats4.ChatId = 2;
     usersChats4.User = user3;
     usersChats4.Chat = chat2;
 
-    UsersChats usersChats5 = new UsersChats();
+    UsersChats usersChats5 = new UsersChats(); //Jack - 2 - ProgrammingChat
     usersChats5.UserId = 4;
     usersChats5.ChatId = 2;
     usersChats5.User = user4;
     usersChats5.Chat = chat2;
 
-    UsersChats usersChats6 = new UsersChats();
+    UsersChats usersChats6 = new UsersChats(); //Helen - 1 - MathChat (Tom and Helen DM)
     usersChats6.UserId = 5;
     usersChats6.ChatId = 1;
     usersChats6.User = user5;
     usersChats6.Chat = chat1;
 
-    Messages message1 = new Messages() { MessageText = "Message from Tom to Math Chat", User = user1, Chat = chat1 };
-    Messages message2 = new Messages() { MessageText = "Message from Helen to Math Chat", User = user5, Chat = chat1 };
-
-
-    Messages message3 = new Messages() { MessageText = "Message from Tom to Progr Chat", User = user1, Chat = chat2 };
-    Messages message4 = new Messages() { MessageText = "Message from Bob to Math Chat", User = user2, Chat = chat2 };
+   
 
 
     db.Users.Add(user1);
@@ -145,14 +205,49 @@ static void AddCustomerData(WebApplication app)
     db.UsersChats.Add(usersChats4);
     db.UsersChats.Add(usersChats5);
     db.UsersChats.Add(usersChats6);
+    db.UsersChats.Add(userschats_direct1);
+    db.UsersChats.Add(userschats_direct2);
+    db.UsersChats.Add(userschats_direct3);
+    db.UsersChats.Add(userschats_direct4);
+    db.UsersChats.Add(userschats_direct5);
+    db.UsersChats.Add(userschats_direct6);
+    db.UsersChats.Add(userschats_direct7);
+    db.UsersChats.Add(userschats_direct8);
+    
+    db.UsersChats.Add(all_users_chat1);
+    db.UsersChats.Add(all_users_chat2);
+    db.UsersChats.Add(all_users_chat3);
+    db.UsersChats.Add(all_users_chat4);
+    db.UsersChats.Add(all_users_chat5);
+    db.UsersChats.Add(all_users_chat6);
+
+    db.UsersChats.Add(userschats_direct9);
+    db.UsersChats.Add(userschats_direct10);
+
+   
+
+    db.SaveChanges();
+
+    
+    Messages message1 = new Messages() { MessageText = "Hello Helen! It's Tom!", User_Id = user1.Id, Chat_Id = chat1.Id,time_sent=new DateTime(2022,8,24,19,35,0) };
+    Messages message2 = new Messages() { MessageText = "Hello Tom, I am Helen, nice to meet you!", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent=new DateTime(2022,8,24,19,36,10)};
+
+
+    Messages message3 = new Messages() { MessageText = "Hello progers! It's Tom", User_Id = user1.Id, Chat_Id = chat2.Id, time_sent=new DateTime(2022,8,25,12,0,0) };
+    Messages message4 = new Messages() { MessageText = "Nice to meet you) I am Bob", User_Id = user2.Id, Chat_Id = chat2.Id, time_sent=new DateTime(2022,8,26,19,30,0) };
+    
+
+   
+
+    
+
 
     db.Messages.Add(message1);
     db.Messages.Add(message2);
     db.Messages.Add(message3);
     db.Messages.Add(message4);
-
     db.SaveChanges();
-
+    /*
     foreach (Chats chat in db.Chats)
     {
         Console.WriteLine("Chat - " + chat.ChatName + " [");
@@ -164,6 +259,8 @@ static void AddCustomerData(WebApplication app)
         }
         Console.Write("]");
     }
+    */
+
 
 
 
