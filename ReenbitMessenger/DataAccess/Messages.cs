@@ -9,8 +9,10 @@ namespace ReenbitMessenger.DataAccess
         [Key]
         public int Id { get; set; }
         public string MessageText { get; set; }
-        public User User { get; set; }
-        public Chats Chat { get; set; }
+        public int User_Id{ get; set; }
+        public int Chat_Id { get; set; }
         public Messages? ReplyToMessage { get; set; }
+        public DateTime time_sent { get; set; }
+        //DATE TIME
     }
 }
