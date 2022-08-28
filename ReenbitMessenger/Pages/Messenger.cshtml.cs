@@ -76,32 +76,65 @@ namespace ReenbitMessenger.Pages
             return new JsonResult(description);
         }
 
-        public async Task<JsonResult> OnPostOpenChat(int chat_id)
+        public async Task<JsonResult> OnPostOpenChat(int chat_id, int page_to_open)
         {
-            List<AJAX_Response> Response_list = new List<AJAX_Response>();
+           List<AJAX_Response> Response_list = new List<AJAX_Response>();
+           List<AJAX_Response> Response_list_paged = new List<AJAX_Response>();
 
            List<Messages> messages_from_current_chat = new List<Messages>();
            messages_from_current_chat=db.Messages.Where(x=>x.Chat_Id==chat_id).ToList();
-           
+            //Console.WriteLine(messages_from_current_chat.Count()+"!!!");
 
+            int msg_from = 5 * page_to_open - 5;
+            int msg_to = 5*page_to_open-1;
 
+            if (page_to_open == -1)
+            {
+                int counter = 0;
+                int len=messages_from_current_chat.Count-1;
+               while (len - 5 >= 0)
+                {
+                    len -= 5;
+                    counter++;
+                }
+                msg_from = counter * 5;
+                msg_to = messages_from_current_chat.Count - 1;
+            }
 
+            Console.WriteLine(msg_from + " " + msg_to);
+
+            //0-4
+            //5-9
+            //10-14
+            int i = 0;
             foreach(var msg in messages_from_current_chat)
             {
-                AJAX_Response response_item = new AJAX_Response();
-                response_item.Id=msg.Id;
-                response_item.MessageText = msg.MessageText;
-                response_item.Reply = msg.ReplyToMessage;
-                response_item.Chats = db.Chats.Where(x => x.Id == msg.Chat_Id).FirstOrDefault();
-                response_item.User=db.Users.Where(x => x.Id==msg.User_Id).FirstOrDefault();
-                response_item.time_sent = msg.time_sent;
-                Response_list.Add(response_item);
-                Console.WriteLine(response_item.User.Name+" "+response_item.MessageText);
+               
+                    AJAX_Response response_item = new AJAX_Response();
+                    response_item.Id = msg.Id;
+                    response_item.MessageText = msg.MessageText;
+                    response_item.Reply = msg.ReplyToMessage;
+                    response_item.Chats = db.Chats.Where(x => x.Id == msg.Chat_Id).FirstOrDefault();
+                    response_item.User = db.Users.Where(x => x.Id == msg.User_Id).FirstOrDefault();
+                    response_item.time_sent = msg.time_sent;
+                    Response_list.Add(response_item);
+                    Console.WriteLine(response_item.User.Name + " " + response_item.MessageText);
+                
+                
             }
 
             Response_list=Response_list.OrderBy(x => x.time_sent).ToList();
 
-            return new JsonResult(Response_list);
+            foreach (var item in Response_list)
+            {
+                if (i>=msg_from && i <= msg_to)
+                {
+                    Response_list_paged.Add(item);
+                }
+                i++;
+            }
+
+            return new JsonResult(Response_list_paged);
         }
 
         public async Task<JsonResult> OnPostSendMessage(string msg,string author_id,string chat_id)
