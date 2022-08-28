@@ -1,6 +1,7 @@
 ﻿@page 
 @using ReenbitMessenger.Pages
 @model ReenbitMessenger.Pages.IndexModel
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = null;
 }
@@ -91,12 +92,15 @@
        <div class="right-part">
            <div class="right-part-head" >
                <div class="right-part-head-image"> 
-               <div class="user_name_avatar"> 
+               <div class="user_name_avatar tooltip"> 
                    <img src="~/user_avatars/@ViewData["current_user_avatar"]" />
                <p class="active-user-name">@ViewData["current_user_name"]</p>
+               <a class="tooltip_text" asp-page="Index">tooltip</a>
                </div>
+               
                </div>
                 <hr />
+                
            </div>
            <div class="right-part-chat-window" id="chat_window" >          
               
@@ -104,7 +108,9 @@
            
            </div>
            <div class="right-part-write-tools" >
-
+               
+               <input type="text" name="message" id="input_message"/>
+               <button onclick=SendMessage()>Send</button>
            </div>
        </div>
    </div>

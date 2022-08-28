@@ -231,19 +231,60 @@ static void AddCustomerData(WebApplication app)
     
     Messages message1 = new Messages() { MessageText = "Hello Helen! It's Tom!", User_Id = user1.Id, Chat_Id = chat1.Id,time_sent=new DateTime(2022,8,24,19,35,0) };
     Messages message2 = new Messages() { MessageText = "Hello Tom, I am Helen, nice to meet you!", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent=new DateTime(2022,8,24,19,36,10)};
+    Messages message22 = new Messages() { MessageText = "How are you?", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent=new DateTime(2022,8,24,19,37,10)};
+    Messages message12 = new Messages() { MessageText = "I am fine, thanks", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 38, 0) };
+    Messages message13 = new Messages() { MessageText = " and how are you", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 38, 30) };
+    Messages message23 = new Messages() { MessageText = "Pretty OK, just finished my homework", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 39, 10) };
+    Messages message24 = new Messages() { MessageText = "What do you think about going out tomorrow?", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 40, 10) };
+    Messages message14 = new Messages() { MessageText = "Sure, why not!", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 40, 30) };
+    Messages message15 = new Messages() { MessageText = "Let's go to cinema?", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 40, 40) };
+    Messages message25 = new Messages() { MessageText = "Cool! I want to watch new Avatar movie", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 40, 50) };
+    Messages message16 = new Messages() { MessageText = "Then I will pick you up tomorrow at 18:30!", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 41, 40) };
+    Messages message17 = new Messages() { MessageText = "See you darling!", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 41, 50) };
+    Messages message26 = new Messages() { MessageText = "Okay!", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 42, 50) };
+    Messages message27 = new Messages() { MessageText = "Bye honey!", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 43, 50) };
+
+
+
 
 
     Messages message3 = new Messages() { MessageText = "Hello progers! It's Tom", User_Id = user1.Id, Chat_Id = chat2.Id, time_sent=new DateTime(2022,8,25,12,0,0) };
     Messages message4 = new Messages() { MessageText = "Nice to meet you) I am Bob", User_Id = user2.Id, Chat_Id = chat2.Id, time_sent=new DateTime(2022,8,26,19,30,0) };
-    
 
-   
 
-    
+    Messages message51 = new Messages() { MessageText = "Hello guys, I am Tom!", User_Id = user1.Id, Chat_Id = group_all_chat.Id, time_sent = new DateTime(2022, 8, 25, 19, 30, 0) };
+    Messages message52 = new Messages() { MessageText = "Hi! I am Bob)", User_Id = user2.Id, Chat_Id = group_all_chat.Id, time_sent = new DateTime(2022, 8, 25, 19, 31, 0) };
+    Messages message53 = new Messages() { MessageText = "Me Jango!", User_Id = user3.Id, Chat_Id = group_all_chat.Id, time_sent = new DateTime(2022, 8, 25, 19, 32, 0) };
+    Messages message54 = new Messages() { MessageText = "My name is Mary", User_Id = user4.Id, Chat_Id = group_all_chat.Id, time_sent = new DateTime(2022, 8, 25, 19, 33, 0) };
+    Messages message55 = new Messages() { MessageText = "I am Helen, hello everyone!", User_Id = user5.Id, Chat_Id = group_all_chat.Id, time_sent = new DateTime(2022, 8, 25, 19, 34, 0) };
+    Messages message56 = new Messages() { MessageText = "My name is Svyatoslav, nice to meet you guys!", User_Id = user6.Id, Chat_Id = group_all_chat.Id, time_sent = new DateTime(2022, 8, 25, 19, 35, 0) };
+
+
+
 
 
     db.Messages.Add(message1);
     db.Messages.Add(message2);
+    db.Messages.Add(message22);
+    db.Messages.Add(message12);
+    db.Messages.Add(message13);
+    db.Messages.Add(message23);
+    db.Messages.Add(message24);
+    db.Messages.Add(message14);
+    db.Messages.Add(message15);
+    db.Messages.Add(message25);
+    db.Messages.Add(message16);
+    db.Messages.Add(message17);
+    db.Messages.Add(message26);
+    db.Messages.Add(message27);
+    db.Messages.Add(message51);
+    db.Messages.Add(message52);
+    db.Messages.Add(message53);
+    db.Messages.Add(message54);
+    db.Messages.Add(message55);
+    db.Messages.Add(message56);
+
+
     db.Messages.Add(message3);
     db.Messages.Add(message4);
     db.SaveChanges();

@@ -18,7 +18,8 @@ namespace ReenbitMessenger.Pages
        
         public void OnGet()
         {
-            Users=db.Users.ToList();
+            Response.Cookies.Append("Current_user_id", "0");
+            Users =db.Users.ToList();
 
             
         }

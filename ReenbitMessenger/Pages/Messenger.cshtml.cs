@@ -104,6 +104,63 @@ namespace ReenbitMessenger.Pages
             return new JsonResult(Response_list);
         }
 
+        public async Task<JsonResult> OnPostSendMessage(string msg,string author_id,string chat_id)
+        {
+            
+            Messages new_msg=new Messages() { Chat_Id=int.Parse(chat_id), MessageText=msg, User_Id=int.Parse(author_id), time_sent=DateTime.Now};
+
+            db.Messages.Add(new_msg);
+            db.SaveChanges();
+            //Console.WriteLine('{' + msg + '}' + author_id + chat_id+" - saved");
+
+
+            return new JsonResult(null);
+        }
+
+        public async Task<JsonResult> OnPostEditMessage(string msg_id,string msg_new_text)
+        {
+            Messages edited_msg = db.Messages.Where(x => x.Id == int.Parse(msg_id)).FirstOrDefault();
+            edited_msg.MessageText = msg_new_text;
+
+            db.Messages.Remove(db.Messages.Where(x => x.Id == int.Parse(msg_id)).FirstOrDefault());
+            db.SaveChanges();
+            db.Messages.Add(edited_msg);
+            db.SaveChanges();
+            Console.WriteLine("Edited msg to " + msg_new_text);
+
+            return new JsonResult(null);
+        }
+
+
+        public async Task<JsonResult> OnPostDeleteMessage(string msg_id)
+        {
+            db.Messages.Remove(db.Messages.Where(x=>x.Id==int.Parse(msg_id)).FirstOrDefault());
+            db.SaveChanges();
+            Console.WriteLine(msg_id + " deleted");
+
+            return new JsonResult(null);
+        }
+
+        public async Task<JsonResult> OnPostReplyToMessage(string msg_id,string msg_text,string author_id)
+        {
+            Messages message_original = db.Messages.Where(x=>x.Id== int.Parse(msg_id)).FirstOrDefault(); 
+            Messages message_reply=new Messages() { MessageText= msg_text+"REPLY", time_sent=DateTime.Now, User_Id=int.Parse(author_id), Chat_Id=message_original.Chat_Id, ReplyToMessage=message_original  };
+            db.Messages.Add(message_reply);
+            db.SaveChanges();
+            return new JsonResult(null);
+        }
+         public async Task<JsonResult> OnPostPaginationFunc(int chat_id)
+        {
+            List<Messages> messages_from_current_chat = new List<Messages>();
+            messages_from_current_chat = db.Messages.Where(x => x.Chat_Id == chat_id).ToList();
+            KeyValuePair<string, string> map_ = new KeyValuePair<string, string>(key: "len", value: messages_from_current_chat.Count().ToString());
+
+
+
+
+
+            return new JsonResult(messages_from_current_chat.Count());
+        }
 
         public void OnGet(int id)
             
