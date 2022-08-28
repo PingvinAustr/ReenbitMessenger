@@ -3,10 +3,18 @@ var editing_mode_on = false;
 var editing_message_id = 0;
 var reply_message_id = 0;
 var num_pages = "";
+var msg_per_page = 5;
+var displayed_num_of_msg = -1;
+var current_page;
 
 const interval = setInterval(function () {
     // method to be executed;
-    if (opened_chat_id!=0) OpenChat(opened_chat_id);
+    if (opened_chat_id != 0) {
+        console.log("interval_current_page" + " " + current_page);
+        console.log("interval_opened_chat" + " " + opened_chat_id);
+        OpenChat(opened_chat_id, current_page);
+        
+    }
     console.log("timer tick");
 }, 5000);
 
@@ -56,16 +64,21 @@ function NumOfMessagesInChat(id) {
   
 }
 
-async function OpenChat(id,page_to_open) {
+async function OpenChat(id, page_to_open) {
+    //alert("OpenChat:" + page_to_open);
+    if (page_to_open == null) page_to_open = -1;
+    console.log("OpenChat,page_to_open:"+page_to_open);
+  
+    current_page = page_to_open;
 
+     
 
-    
-
+   
     await NumOfMessagesInChat(id);
 
     
     //alert("[" + num_pages + "]");
-    let num_pagination = Math.ceil(parseInt(num_pages) / 5);
+    let num_pagination = Math.ceil(parseInt(num_pages) / msg_per_page);
     if (num_pagination == 0) num_pagination = 1;
     
     
@@ -76,13 +89,16 @@ async function OpenChat(id,page_to_open) {
         url: url,
         headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
         data: {
-            chat_id: id          
+            chat_id: id,
+            page_to_open: page_to_open
         },
         //contentType: "application/json;",
         dataType: "json",
         success: function (response) {
             console.log("Successfully retrieved messages from chat via ajax:");
             console.log(response);
+            if (current_page == -1) current_page = num_pagination;
+            //alert("current_page_after-1_request" + current_page);
             LoadChat(response, num_pagination);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -98,13 +114,13 @@ function LoadChat(response,num_pagination) {
 
     //alert("!" + num_pagination);
 
-
+    
     let chat_window = document.getElementById("chat_window");
     let num_of_messages = Object.keys(response).length;
 
    //Clear current chat window
     chat_window.innerHTML = "";
-
+    displayed_num_of_msg = response.length;
     for (let msg_object in response) {
         let message_id = response[msg_object]["id"];
         let message_author_id = response[msg_object]["user"]["id"];
@@ -133,7 +149,8 @@ function LoadChat(response,num_pagination) {
 
     let pagination_div = "";
     for (i = 1; i <= num_pagination; i++) {
-        pagination_div+="<span>"+i+"</span>"
+        let test = "OpenChat(" + opened_chat_id + "," + (i) + ")";
+        pagination_div += "<span onclick='"+test+"'>" + i + "</span>"
     }
 
     let father_pagination = document.createElement("div");
@@ -175,7 +192,15 @@ function SendMessage(msg_id,reply_mode) {
                 console.log("Successfully sent message via ajax:");
                 console.log(response);
                 document.getElementById("input_message").value = "";
-                OpenChat(opened_chat_id);
+                if (displayed_num_of_msg == msg_per_page) {
+                    //alert("SendMessage_A" + displayed_num_of_msg + "___" + msg_per_page);
+                    OpenChat(opened_chat_id, current_page + 1);
+                }
+                else {
+                    //alert("SendMessage_B" + displayed_num_of_msg + "___" + msg_per_page);
+                    OpenChat(opened_chat_id, current_page);
+                }
+               
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -201,7 +226,7 @@ function SendMessage(msg_id,reply_mode) {
                 document.getElementById("input_message").value = "";
                 editing_message_id = null;
                 editing_mode_on = false;
-                OpenChat(opened_chat_id);
+                OpenChat(opened_chat_id, current_page);
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -227,7 +252,14 @@ function SendMessage(msg_id,reply_mode) {
                 console.log(response);
                 reply_message_id = 0;
                 document.getElementById("input_message").value = "";
-                OpenChat(opened_chat_id);
+                if (displayed_num_of_msg == msg_per_page) {
+                    //alert("A" + displayed_num_of_msg);
+                    OpenChat(opened_chat_id, current_page + 1);
+                }
+                else {
+                    //alert("B" + displayed_num_of_msg);
+                    OpenChat(opened_chat_id, current_page);
+                }
 
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -253,7 +285,8 @@ function DeleteMessage(message_id) {
         success: function (response) {
             console.log("Successfully delete message for ALL via ajax:");
             console.log(response);
-            OpenChat(opened_chat_id);
+            if (displayed_num_of_msg == 1) { OpenChat(opened_chat_id, current_page - 1); }
+            else { OpenChat(opened_chat_id, current_page); }
 
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -265,4 +298,35 @@ function DeleteMessage(message_id) {
 function ReplyToMessage(message_id) {
     alert("Please enter reply text to input field and press the button!");
     reply_message_id = message_id;
+}
+
+var burger_opened = false;
+function BurgerCheck() {
+    let hide_show1 = document.querySelectorAll(".chat-item-right");
+    let hide_show2 = document.querySelectorAll(".chat-item-left");
+
+    if (burger_opened) {
+        hide_show1.forEach(item => {
+            item.classList.add("hidden");
+        });
+        hide_show2.forEach(item => {
+            item.style.width = "auto";
+        });
+
+        document.getElementById("left_part").style.width = "15vw";
+        //document.getElementById("right_part").style.width = "85vw";
+
+        burger_opened = false;
+    }
+    else {
+        hide_show1.forEach(item => {
+            item.classList.remove("hidden");
+        });
+        hide_show2.forEach(item => {
+            item.style.width = "calc(25% - 2px);";
+        });
+        document.getElementById("left_part").style.width = "45vw";
+        //document.getElementById("right_part").style.width = "55vw";
+        burger_opened = true;
+    }
 }
