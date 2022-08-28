@@ -14,6 +14,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
 </head>
 
 
@@ -21,24 +23,29 @@
 <body>
 
    <div class="main-container">
-       <div class="left-part">
+       <div class="left-part" id="left_part">
            <div class="left-part-head">
-
+               <div class="burger_menu" id="burger_menu" onclick="BurgerCheck()">
+                   <div class="burger_line"></div>
+                   <div class="burger_line"></div>
+                   <div class="burger_line"></div>
+               </div>
               <hr />
            </div>
-           <div class="left-part-groups">
+           <div class="left-part-groups custom-scrollbar">
 
                 @foreach (var item in @Model.GroupChatsOfThisUser)
                 {
-                    <div class="chat-item" onclick="OpenChat(@item.Id)">
+                    <div class="chat-item" onclick="OpenChat(@item.Id,null)">
                         <div class="chat-item-left">
                         <img src="~/user_avatars/chat.png"/>    
                         </div>
                         <div class="chat-item-right">
-                        <div><span>Chat name: </span>@item.ChatName</div>    
+                        <div>@item.ChatName</div>    
                         <div><span>Members: </span>
                                 @{
                                     string html_raw="";
+                                    int users_in_chat = 0;
                                 }
                                 @foreach (var user_chat in @Model.UsersChats)
                                 {
@@ -46,13 +53,14 @@
                                     if (user_chat.ChatId == item.Id)
                                     {
                                         html_raw += user_chat.User.Name + " " + user_chat.User.Surname+", ";
-                                        
+                                        users_in_chat++;
+
                                     }
                                 }
                                 @{
                                     html_raw = html_raw.Substring(0, html_raw.Length - 2);
                                     if (html_raw.Length >= 100) html_raw = html_raw.Substring(0, 100) + "...";
-                                    @Html.Raw(html_raw);
+                                    @Html.Raw(users_in_chat+" members");
                                 }
 
                         </div>
@@ -63,10 +71,10 @@
                 
            </div>
 
-           <div class="left-part-direct">
+           <div class="left-part-direct custom-scrollbar">
                @foreach (var item in @Model.DirectChatsOfThisUser)
                 {
-                    <div class="chat-item" onclick="OpenChat(@item.Id)" >
+                    <div class="chat-item" onclick="OpenChat(@item.Id,null)" >
                         <div class="chat-item-left">
 
                             @{
@@ -81,7 +89,7 @@
                         
                         </div>
                         <div class="chat-item-right">
-                        <div><span>Friend: </span>@item.ChatName</div>    
+                        <div>@item.ChatName</div>    
                         
                         </div>   
                    
@@ -89,7 +97,7 @@
                 }
            </div>
        </div>
-       <div class="right-part">
+       <div class="right-part" id="right_part">
            <div class="right-part-head" >
                <div class="right-part-head-image"> 
                <div class="user_name_avatar tooltip"> 
