@@ -239,7 +239,38 @@ namespace ReenbitMessenger.Pages
             return new JsonResult(info);
         }
 
-        public void OnGet(int id)
+        public async Task<JsonResult> OnPostGetUserNameById(int user_id)
+        {
+            string name = db.Users.Where(x => x.Id == user_id).FirstOrDefault().Name + " " + db.Users.Where(x => x.Id == user_id).FirstOrDefault().Surname;
+            return new JsonResult(name);
+        }
+
+        public async Task<JsonResult> OnPostSendDM(int opponent_id)
+        {
+            Console.WriteLine("ASDASDASDASDASDA");
+
+            Chats new_chat = new Chats() { ChatName = "DirectChat(" + opponent_id + "," + Request.Cookies["Current_user_id"] + ")" };
+            UsersChats uc1 = new UsersChats() { UserId = opponent_id, ChatId = new_chat.Id, Chat = new_chat, User = db.Users.Where(x => x.Id == opponent_id).FirstOrDefault() };
+            UsersChats uc2 = new UsersChats() { UserId = int.Parse(Request.Cookies["Current_user_id"]), ChatId = new_chat.Id, Chat = new_chat, User = db.Users.Where(x => x.Id == int.Parse(Request.Cookies["Current_user_id"])).FirstOrDefault() };
+            db.Chats.Add(new_chat);
+            db.UsersChats.Add(uc1);
+            db.UsersChats.Add(uc2);
+            db.SaveChanges();
+
+
+            Console.WriteLine("TTTT" + db.Chats.Where(x => x.ChatName == new_chat.ChatName).FirstOrDefault().ChatName);
+
+            return new JsonResult(new_chat.Id);
+        }
+
+
+         public IActionResult OnPost()
+        {
+            Console.WriteLine("POST");
+            return RedirectToPage("Messenger/?id=1");
+        }
+
+            public IActionResult OnGet(int id)
             
         {
             Users = db.Users.ToList();
@@ -259,22 +290,9 @@ namespace ReenbitMessenger.Pages
 
 
             GetGroupChatsOfUser(id);
-            //GetAllAvatars();
-            /*
-            foreach (var user in Users)
-            {
-                Console.WriteLine("User - " + user.Name);
-                var messages_of_user = Messages.Where(x => x.User == user).ToList();
-
-                if (messages_of_user.Count > 0)
-                {
-                    Console.WriteLine("has written messages" + messages_of_user.Count());
-                }
-
-            }
-            */
-
-
+            string url = Url.Page("Messenger", new { id = id });
+            return Page();
+             
         }
 
         public void OnPostUpdate()

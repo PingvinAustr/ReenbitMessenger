@@ -41,7 +41,7 @@ static void AddCustomerData(WebApplication app)
 
 
 
-
+   
 
     List<Chats> test = new List<Chats>();
 
@@ -120,9 +120,10 @@ static void AddCustomerData(WebApplication app)
 
    
 
-
+    /*
     UsersChats userschats_direct1 = new UsersChats() { UserId=1,User=user1,ChatId=3,Chat=direct_chat3 }; //Tom - 3 - DM
     UsersChats userschats_direct2 = new UsersChats() { UserId=2,User=user2,ChatId=3,Chat=direct_chat3 }; //Bob - 3 - DM
+    */
 
     UsersChats userschats_direct3 = new UsersChats() { UserId = 2, User = user2, ChatId = 4, Chat = direct_chat4 }; //Bob - 4 - DM
     UsersChats userschats_direct4 = new UsersChats() { UserId = 5, User = user5, ChatId = 4, Chat = direct_chat4 }; //Helen - 4 - DM
@@ -205,8 +206,8 @@ static void AddCustomerData(WebApplication app)
     db.UsersChats.Add(usersChats4);
     db.UsersChats.Add(usersChats5);
     db.UsersChats.Add(usersChats6);
-    db.UsersChats.Add(userschats_direct1);
-    db.UsersChats.Add(userschats_direct2);
+    //db.UsersChats.Add(userschats_direct1);
+    //db.UsersChats.Add(userschats_direct2);
     db.UsersChats.Add(userschats_direct3);
     db.UsersChats.Add(userschats_direct4);
     db.UsersChats.Add(userschats_direct5);

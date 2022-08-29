@@ -6,16 +6,27 @@ var num_pages = "";
 var msg_per_page = 20;
 var displayed_num_of_msg = -1;
 var current_page;
+var IsTimerPaused = false;
+
+
+
+window.onload = function () {
+    if (getCookie("ChatToInstantOpen") != null) OpenChat(getCookie("ChatToInstantOpen"));
+}
+
+
 
 const interval = setInterval(function () {
     // method to be executed;
-    if (opened_chat_id != 0) {
-        console.log("interval_current_page" + " " + current_page);
-        console.log("interval_opened_chat" + " " + opened_chat_id);
-        OpenChat(opened_chat_id, current_page);
-        
+    if (!IsTimerPaused) {
+        if (opened_chat_id != 0) {
+            console.log("interval_current_page" + " " + current_page);
+            console.log("interval_opened_chat" + " " + opened_chat_id);
+            OpenChat(opened_chat_id, current_page);
+
+        }
+        console.log("timer tick");
     }
-    console.log("timer tick");
 }, 5000);
 
 
@@ -108,10 +119,34 @@ async function OpenChat(id, page_to_open) {
     
 
 }
-
+/*
+async function GetUserNameById(user_id) {
+  
+    var url = "?handler=GetUserNameById";
+     $.ajax({
+        type: "POST",
+        url: url,
+        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+        data: {
+            user_id: user_id
+        },
+        //contentType: "application/json;",
+        dataType: "text",
+         success: function (response) {
+             console.log("REPNAME" + response);
+     
+             return response;
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    });
+}
+*/
 
 async function LoadChat(response,num_pagination) {
 
+    document.getElementById("write-tools-block").style.display = "flex";
     //alert("!" + num_pagination);
     let chat_name = "";
     let num_of_users = 0;
@@ -131,6 +166,17 @@ async function LoadChat(response,num_pagination) {
         let message_text = response[msg_object]["messageText"];
         let message_author_name = response[msg_object]["user"]["name"];
         let message_author_surname = response[msg_object]["user"]["surname"];
+
+        /*
+        let reply_message_author_id = null;
+        let reply_message_author_name = "";
+        if (response[msg_object]["reply"] != null) {
+            reply_message_author_id = response[msg_object]["reply"]["user_Id"];
+            reply_message_author_name = GetUserNameById(reply_message_author_id);
+            alert(reply_message_author_name);
+        }
+        */
+
         let message_reply_to = null;
         let time_sent = response[msg_object]["time_sent"];
         time_sent = String(time_sent).replace("T", " ");
@@ -146,7 +192,7 @@ async function LoadChat(response,num_pagination) {
 
         let reply_string = "";
         if (message_reply_to != null) {
-            reply_string = "RE: " + message_reply_to;
+            reply_string = "RE: <div style='display:inline-block; color: gray'>" + message_reply_to+"</div>";
         }
 
         //alert(parseInt(getCookie("Current_user_id")) == parseInt(message_author_id));
@@ -154,30 +200,34 @@ async function LoadChat(response,num_pagination) {
      
         if (parseInt(getCookie("Current_user_id")) == parseInt(message_author_id)) {     //"<div class='my_spans'> <span onclick='EditingMode(" + message_id + ")'> Edit</span > <span>DeleteMe</span> <span onclick='DeleteMessage(" + message_id + ")'" + " > DeleteAll</span ></div>"
             let img = "<div class='small_img_container'><img class='small_img' src='../user_avatars/" + author_img + "'/></div>";
-            let myspans = "<div class='my_spans'> <span onclick='EditingMode(" + message_id + ")'> Edit</span > <span>Hide</span> <span onclick='DeleteMessage(" + message_id + ")'" + " > Delete</span ></div>";
+            let myspans = "<div class='my_spans'> <span onclick='EditingMode(" + message_id + ")'> Edit</span >  <span onclick='DeleteMessage(" + message_id + ")'" + " > Delete</span ></div>";
 
-            chat_window.innerHTML += "<div id='" + message_id + "' class='right-part-chat-window-row right-part-chat-window-row-reverse'><div class='msg_wrap'><div class='message_body' > " + "<div class='msg_text' id='message_" + message_id + "'>" + message_text + "</div>" + reply_string + myspans + "</div>" + "<div class='time-sent'>" + time_sent +"</div></div> " + img + "</div>";
+            chat_window.innerHTML += "<div id='" + message_id + "' class='right-part-chat-window-row right-part-chat-window-row-reverse'><div class='msg_wrap'><div id='message_body" + message_id+"' class='message_body' > " + "<div class='msg_text' id='message_" + message_id + "'>" + message_text + "</div>" + reply_string + "</div>" + myspans + "<div class='time-sent'>" + time_sent + "</div></div> " + img + "</div>";
         }
         else {
-            let img = "<div class='small_img_container'><img class='small_img' src='../user_avatars/" + author_img + "'/></div>";
-            chat_window.innerHTML += "<div id='" + message_id + "' class='right-part-chat-window-row' >" + img + "<div class='msg_wrap'> <div class='message_body message_body_reverse'>  <div class='message_text'>" + message_text + "<div class='reply' onclick='ReplyToMessage(" + message_id + ")'>Reply</div></div>" + reply_string + "</div> <div class='time-sent time-sent-reverse'>" + time_sent+"</div></div></div> ";
+            let func = "OpenAuthorPopup(" + parseInt(message_author_id) + ",'" + author_img + "','" + message_author_name + "','" + message_author_surname+"')";
+            let img = "<div class='small_img_container'><img onclick="+func+" class='small_img' src='../user_avatars/" + author_img + "'/></div>";
+            chat_window.innerHTML += "<div id='" + message_id + "' class='right-part-chat-window-row' >" + img + "<div class='msg_wrap'> <div id='message_body" + message_id+"' class='message_body message_body_reverse'>  <div id='message_" + message_id + "' class='message_text'>" + message_text + "</div>" + reply_string + "</div>" + "<div class='reply'><span onclick='ReplyToMessage(" + message_id + ")'>Reply</span></div>" + "<div class='time-sent time-sent-reverse'>" + time_sent + "</div></div></div> ";
         }
         }
 
-    let pagination_div = "";
-    for (i = 1; i <= num_pagination; i++) {
-        let test = "OpenChat(" + opened_chat_id + "," + (i) + ")";
-        pagination_div += "<span onclick='"+test+"'>" + i + "</span>"
+    if (num_pagination > 1) {
+        let pagination_div = "<div style='color:gray'>Pages:</div>";
+        for (i = 1; i <= num_pagination; i++) {
+            let test = "OpenChat(" + opened_chat_id + "," + (i) + ")";
+            pagination_div += "<span class='pagination_span' onclick='" + test + "'>" + i + "</span>"
+        }
+
+
+        let father_pagination = document.createElement("div");
+        father_pagination.innerHTML = pagination_div;
+        father_pagination.classList.add("pagination_div");
+        document.getElementById("chat_window").appendChild(father_pagination);
     }
-
-    let father_pagination = document.createElement("div");
-    father_pagination.innerHTML = pagination_div;
-    father_pagination.classList.add("pagination_div");
-    
    
 
     //let html_pagination_div = $(pagination_div);
-    document.getElementById("chat_window").appendChild(father_pagination);
+   
     //alert(pagination_div);
 
 
@@ -187,6 +237,119 @@ async function LoadChat(response,num_pagination) {
     await GetNumOfChatUsers();
     
 
+}
+
+
+function OpenAuthorPopup(author_id, author_img,author_name,author_surname) {    
+    let popup = document.createElement("div");
+    popup.classList.add("author_dm_popup");
+    document.getElementById("chat_window").appendChild(popup);
+    IsTimerPaused = true;
+
+    let cross = document.createElement('div');
+    cross.classList.add("close");
+    cross.addEventListener("click", function () {
+        popup.remove();
+        IsTimerPaused = false;
+    });
+    popup.appendChild(cross);
+
+    let father_block = document.createElement("div");
+    father_block.classList.add("popup_father");
+    popup.appendChild(father_block);
+
+
+    let name_row = document.createElement("div");
+    name_row.classList.add("name_row");
+    father_block.appendChild(name_row);
+
+    let avatar = document.createElement("img");
+    avatar.classList.add("popup_image");
+    avatar.src = "../user_avatars/" + author_img;
+    name_row.appendChild(avatar);
+
+    let flex_parent = document.createElement("div");
+    flex_parent.classList.add("flex_parent");
+    name_row.appendChild(flex_parent);
+
+
+    author_name = " " + author_name;
+    author_surname = " " + author_surname;
+    let name_block = document.createElement("div");
+    name_block.classList.add("popup_text");
+    name_block.innerHTML = "<div class='popup_span'> Name: </div>" +author_name;
+    flex_parent.appendChild(name_block);
+
+    let surname_block = document.createElement("div");
+    surname_block.classList.add("popup_text");
+    surname_block.innerHTML = "<div class='popup_span'> Surname: </div>" + author_surname;
+    flex_parent.appendChild(surname_block);
+
+    /*
+    let form_div = document.createElement("div"); ///?handler=login
+    form_div.innerHTML = "<form method='post' action='/Messenger?handler=SendDM'><input name='opponent_id' value='"+author_id + "'> <button class='popup_button'>Send DM</button></form>";
+    name_row.appendChild(form_div);*/
+    
+    let button_block = document.createElement("div");
+    button_block.classList.add("popup_button");
+    button_block.innerHTML = "Send DM";
+    button_block.addEventListener("click", function () { SendDM(author_id) });
+    name_row.appendChild(button_block);
+    
+    //document.querySelectorAll(".author_dm_popup").style.display = "block";
+    
+}
+
+function SendDM(opponent_id) {
+  
+
+    var url = "?handler=SendDM";
+    $.ajax({
+        type: "POST",
+        url: url,
+        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+        data: {
+            opponent_id: opponent_id
+        },
+        //contentType: "application/json;",
+        dataType: "text",
+        success: function (response) {
+            let num = "";
+            
+            for (let item in response) {
+                num += response[item];
+            }
+            document.cookie = 'ChatToInstantOpen='+num+'; path=/';
+           
+           GetRequest(num);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    });
+
+}
+
+function GetRequest(chat_to_open) {
+    var url = "";
+    $.ajax({
+        type: "GET",
+        url: url,
+        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+        data: {
+            id: getCookie("Current_user_id")
+        },
+        //contentType: "application/json;",
+        dataType: "text",
+        success: function (response) {
+            console.log("get");
+            document.location.reload();
+            
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    });
 }
 
 
@@ -241,102 +404,114 @@ function EditingMode(msg_id) {
 
 function SendMessage(msg_id,reply_mode) {
     message_text = document.getElementById("input_message").value;
-    if (editing_mode_on == false && reply_message_id == 0) {
+    if (message_text != "") {
+        document.getElementById("input_message").placeholder = "Start typing...";
+        if (editing_mode_on == false && reply_message_id == 0) {
 
-        var url = "?handler=SendMessage";
-        return $.ajax({
-            type: "POST",
-            url: url,
-            headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
-            data: {
-                msg: message_text,
-                author_id: getCookie("Current_user_id"),
-                chat_id: opened_chat_id
-            },
-            //contentType: "application/json;",
-            dataType: "json",
-            success: function (response) {
-                console.log("Successfully sent message via ajax:");
-                console.log(response);
-                document.getElementById("input_message").value = "";
-                if (displayed_num_of_msg == msg_per_page) {
-                    //alert("SendMessage_A" + displayed_num_of_msg + "___" + msg_per_page);
-                    OpenChat(opened_chat_id, current_page + 1);
+            var url = "?handler=SendMessage";
+            return $.ajax({
+                type: "POST",
+                url: url,
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                data: {
+                    msg: message_text,
+                    author_id: getCookie("Current_user_id"),
+                    chat_id: opened_chat_id
+                },
+                //contentType: "application/json;",
+                dataType: "json",
+                success: function (response) {
+                    console.log("Successfully sent message via ajax:");
+                    console.log(response);
+                    document.getElementById("input_message").value = "";
+                    if (displayed_num_of_msg == msg_per_page) {
+                        //alert("SendMessage_A" + displayed_num_of_msg + "___" + msg_per_page);
+                        OpenChat(opened_chat_id, current_page + 1);
+                    }
+                    else {
+                        //alert("SendMessage_B" + displayed_num_of_msg + "___" + msg_per_page);
+                        OpenChat(opened_chat_id, current_page);
+                    }
+
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(errorThrown);
                 }
-                else {
-                    //alert("SendMessage_B" + displayed_num_of_msg + "___" + msg_per_page);
+            });
+        }
+        else if (editing_mode_on == true && reply_message_id == 0) {
+            var url = "?handler=EditMessage";
+            return $.ajax({
+                type: "POST",
+                url: url,
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                data: {
+                    msg_id: editing_message_id,
+                    msg_new_text: message_text
+                },
+                //contentType: "application/json;",
+                dataType: "json",
+                success: function (response) {
+                    console.log("Successfully EDITED message via ajax:");
+                    console.log(response);
+                    document.getElementById("input_message").value = "";
+                    editing_message_id = null;
+                    editing_mode_on = false;
+
+                    document.getElementById("write-tools-block").style.border = "";
+                    document.getElementById("send_button").innerHTML = "Send";
+
                     OpenChat(opened_chat_id, current_page);
-                }
-               
 
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert(errorThrown);
-            }
-        });
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+            });
+        }
+        else if (editing_mode_on == false && reply_message_id != 0) {
+            var url = "?handler=ReplyToMessage";
+            return $.ajax({
+                type: "POST",
+                url: url,
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                data: {
+                    msg_id: reply_message_id,
+                    msg_text: message_text,
+                    author_id: getCookie("Current_user_id")
+                },
+                //contentType: "application/json;",
+                dataType: "json",
+                success: function (response) {
+                    console.log("Successfully REPLIED TO message via ajax:");
+                    console.log(response);
+                    reply_message_id = 0;
+
+
+                    document.getElementById("rep_block").remove();
+                    document.getElementById("send_button").innerHTML = "Send";
+                    document.querySelectorAll("right-part-write-tools").style = "justify-content:center";
+
+                    document.getElementById("input_message").value = "";
+                    if (displayed_num_of_msg == msg_per_page) {
+                        //alert("A" + displayed_num_of_msg);
+                        OpenChat(opened_chat_id, current_page + 1);
+                    }
+                    else {
+                        //alert("B" + displayed_num_of_msg);
+                        OpenChat(opened_chat_id, current_page);
+                    }
+
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+            });
+        }
     }
-    else if (editing_mode_on == true && reply_message_id == 0) {
-        var url = "?handler=EditMessage";
-        return $.ajax({
-            type: "POST",
-            url: url,
-            headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
-            data: {
-                msg_id: editing_message_id,
-                msg_new_text: message_text
-            },
-            //contentType: "application/json;",
-            dataType: "json",
-            success: function (response) {
-                console.log("Successfully EDITED message via ajax:");
-                console.log(response);
-                document.getElementById("input_message").value = "";
-                editing_message_id = null;
-                editing_mode_on = false;
-
-                document.getElementById("write-tools-block").style.border = "";
-                document.getElementById("send_button").innerHTML = "Send";
-
-                OpenChat(opened_chat_id, current_page);
-
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert(errorThrown);
-            }
-        });
-    }
-    else if (editing_mode_on == false && reply_message_id != 0) {
-        var url = "?handler=ReplyToMessage";
-        return $.ajax({
-            type: "POST",
-            url: url,
-            headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
-            data: {
-                msg_id: reply_message_id,
-                msg_text: message_text,
-                author_id: getCookie("Current_user_id")
-            },
-            //contentType: "application/json;",
-            dataType: "json",
-            success: function (response) {
-                console.log("Successfully REPLIED TO message via ajax:");
-                console.log(response);
-                reply_message_id = 0;
-                document.getElementById("input_message").value = "";
-                if (displayed_num_of_msg == msg_per_page) {
-                    //alert("A" + displayed_num_of_msg);
-                    OpenChat(opened_chat_id, current_page + 1);
-                }
-                else {
-                    //alert("B" + displayed_num_of_msg);
-                    OpenChat(opened_chat_id, current_page);
-                }
-
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                alert(errorThrown);
-            }
-        });
+    else {
+        document.getElementById("input_message").placeholder = "Please enter something!";
     }
    
 }
@@ -367,8 +542,37 @@ function DeleteMessage(message_id) {
 }
 
 function ReplyToMessage(message_id) {
-    alert("Please enter reply text to input field and press the button!");
+    //alert("Please enter reply text to input field and press the button!");
+    let block = document.getElementById("right-part-write-tools");
+    let rep_block = document.createElement("div");
+    rep_block.classList.add('reply_notification');
+    rep_block.id = "rep_block";
+    rep_block.innerHTML = "<div>Reply to message: <span class='reply_msg'>" + document.getElementById("message_" + message_id).innerHTML + "</span></div>";
+
+    document.getElementById("message_body" + message_id).classList.add("reply_anim");
+
+    document.getElementById("send_button").innerHTML = "Reply";
+
+    document.querySelectorAll("right-part-write-tools").style = "justify-content:flex-start";
+
+    block.insertBefore(rep_block, document.getElementById("write-tools-block"));
+
     reply_message_id = message_id;
+
+    let cancel = document.createElement("div");
+    cancel.classList.add("cancel_cross");
+    cancel.innerHTML = "&#10006";
+    cancel.addEventListener("click", function () {       
+        rep_block.remove();
+        document.getElementById("send_button").innerHTML = "Send";
+        reply_message_id = 0;
+        document.querySelectorAll("right-part-write-tools").style = "justify-content:center";
+    });
+        rep_block.appendChild(cancel);
+    
+
+   
+    
 }
 
 var burger_opened = true;
@@ -378,7 +582,7 @@ function BurgerCheck() {
     elems.forEach(item => {
         item.classList.remove("cross");
     })
-
+ 
 
     let hide_show1 = document.querySelectorAll(".chat-item-right");
     let hide_show2 = document.querySelectorAll(".chat-item-left");

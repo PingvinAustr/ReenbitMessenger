@@ -36,13 +36,14 @@
 
                 @foreach (var item in @Model.GroupChatsOfThisUser)
                 {
+                    Console.WriteLine("[[[[" + @Model.GroupChatsOfThisUser.Count);
                     <div class="chat-item" onclick="OpenChat(@item.Id,null)">
                         <div class="chat-item-left">
                         <img src="~/user_avatars/chat.png"/>    
                         </div>
                         <div class="chat-item-right">
                         <div>@item.ChatName</div>    
-                        <div><span>Members: </span>
+                        <div>
                                 @{
                                     string html_raw="";
                                     int users_in_chat = 0;
@@ -60,7 +61,7 @@
                                 @{
                                     html_raw = html_raw.Substring(0, html_raw.Length - 2);
                                     if (html_raw.Length >= 100) html_raw = html_raw.Substring(0, 100) + "...";
-                                    @Html.Raw(users_in_chat+" members");
+                                    @Html.Raw("<span style='color:#ff7600'>"+users_in_chat+" members</span>");
                                 }
 
                         </div>
@@ -74,12 +75,14 @@
            <div class="left-part-direct custom-scrollbar">
                @foreach (var item in @Model.DirectChatsOfThisUser)
                 {
+                    Console.WriteLine("[[[[++" + @Model.DirectChatsOfThisUser.Count);
+                    Console.WriteLine(item.ChatName);
                     <div class="chat-item" onclick="OpenChat(@item.Id,null)" >
                         <div class="chat-item-left">
 
                             @{
                                 var current_friend = Model.Users.Where(x => (x.Name + " " + x.Surname) == item.ChatName).FirstOrDefault();
-                                
+                                Console.WriteLine(current_friend.UserAvatarImage);
                             }   
                             
                             <img src="~/user_avatars/@current_friend.UserAvatarImage"/>    
@@ -108,7 +111,11 @@
                <div class="user_name_avatar tooltip"> 
                    <img class="profile_image" src="~/user_avatars/@ViewData["current_user_avatar"]" />
               <!-- <p class="active-user-name">@ViewData["current_user_name"]</p> --> 
-               <a class="tooltip_text" asp-page="Index">tooltip</a>
+               <!-- <a class="tooltip_text" asp-page="Index">tooltip</a> -->
+               <div class="tooltip_text"> 
+                   @ViewData["current_user_name"]
+                   <a asp-page="Index">Log out</a>
+               </div>
                </div>
                
                </div>
@@ -117,10 +124,10 @@
            </div>
            <div class="right-part-chat-window" id="chat_window" >          
               
-               <h1 id="choose_chat_div">Please open a chat to read!</h1>
+               <div id="choose_chat_div">Please open a chat to read!</div>
            
            </div>
-           <div class="right-part-write-tools" >
+           <div class="right-part-write-tools" id="right-part-write-tools" >
                <div class="write-tools-block" id="write-tools-block">
                     <input type="text" name="message" id="input_message" placeholder="Start typing..." autocomplete="off"/>
                <div class="write-tools-button-father"> <button onclick=SendMessage() id="send_button">Send</button></div>
