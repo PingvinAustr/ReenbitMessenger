@@ -85,19 +85,19 @@ namespace ReenbitMessenger.Pages
            messages_from_current_chat=db.Messages.Where(x=>x.Chat_Id==chat_id).ToList();
             //Console.WriteLine(messages_from_current_chat.Count()+"!!!");
 
-            int msg_from = 5 * page_to_open - 5;
-            int msg_to = 5*page_to_open-1;
+            int msg_from = 20 * page_to_open - 20;
+            int msg_to = 20*page_to_open-1;
 
             if (page_to_open == -1)
             {
                 int counter = 0;
                 int len=messages_from_current_chat.Count-1;
-               while (len - 5 >= 0)
+               while (len - 20 >= 0)
                 {
-                    len -= 5;
+                    len -= 20;
                     counter++;
                 }
-                msg_from = counter * 5;
+                msg_from = counter * 20;
                 msg_to = messages_from_current_chat.Count - 1;
             }
 
@@ -193,6 +193,50 @@ namespace ReenbitMessenger.Pages
 
 
             return new JsonResult(messages_from_current_chat.Count());
+        }
+          public async Task<JsonResult> OnPostGetNumOfChatUsers(int chat_id)
+        {
+            string current_user_id = Request.Cookies["Current_user_id"];
+
+            string opponent_image = "";           
+            string opponent_name = "";           
+            int users_num = 0;
+
+            foreach (var item in db.UsersChats.ToList())
+            {
+                if (item.ChatId == chat_id)
+                {
+                    users_num++;
+                }
+            }
+
+            if (users_num == 2)
+            {
+                foreach (var item in db.UsersChats.ToList())
+                {
+                    if (item.ChatId == chat_id && item.UserId != int.Parse(current_user_id))
+                    {
+                        
+                       
+                        User user = db.Users.Where(x=>x.Id==item.UserId).FirstOrDefault();
+                        opponent_image = user.UserAvatarImage;
+                        opponent_name= user.Name+" "+user.Surname;
+                    }
+                }
+            }
+            else
+            {
+                opponent_name = db.Chats.Where(x => x.Id == chat_id).FirstOrDefault().ChatName;
+                opponent_image = "chat.png";
+            }
+            List<string> info = new List<string>();
+            info.Add(users_num.ToString());
+            info.Add(opponent_image.ToString());
+            info.Add(opponent_name.ToString());
+           // Console.WriteLine(users_num+"!"+ opponent_image+"!"+opponent_name);
+            
+
+            return new JsonResult(info);
         }
 
         public void OnGet(int id)

@@ -243,7 +243,17 @@ static void AddCustomerData(WebApplication app)
     Messages message17 = new Messages() { MessageText = "See you darling!", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 41, 50) };
     Messages message26 = new Messages() { MessageText = "Okay!", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 42, 50) };
     Messages message27 = new Messages() { MessageText = "Bye honey!", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 24, 19, 43, 50) };
-
+    
+    Messages message28 = new Messages() { MessageText = "Hi!", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 25, 19, 43, 50) };
+    Messages message29 = new Messages() { MessageText = "How is your exam?", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 25, 19, 44, 50) };
+    Messages message210 = new Messages() { MessageText = "Hello Tom", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 25, 19, 45, 50) };
+    Messages message211 = new Messages() { MessageText = "I've got A+ and I am very happy!", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 25, 19, 46, 50) };
+    Messages message212 = new Messages() { MessageText = "Cool!", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 25, 19, 47, 50) };
+    Messages message213 = new Messages() { MessageText = "Thanks for your support", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 25, 19, 48, 50) };
+    Messages message214 = new Messages() { MessageText = "You are welcome", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 25, 19, 49, 50) };
+    Messages message215 = new Messages() { MessageText = "Wanna hang out tonight?", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 25, 19, 50, 50) };
+    Messages message216 = new Messages() { MessageText = "Sure!", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 25, 19, 51, 50) };
+    
 
 
 
@@ -261,7 +271,15 @@ static void AddCustomerData(WebApplication app)
 
 
 
-
+    db.Messages.Add(message28);
+    db.Messages.Add(message29);
+    db.Messages.Add(message210);
+    db.Messages.Add(message211);
+    db.Messages.Add(message212);
+    db.Messages.Add(message213);
+    db.Messages.Add(message214);
+    db.Messages.Add(message215);
+    db.Messages.Add(message216);
 
     db.Messages.Add(message1);
     db.Messages.Add(message2);
@@ -273,6 +291,9 @@ static void AddCustomerData(WebApplication app)
     db.Messages.Add(message14);
     db.Messages.Add(message15);
     db.Messages.Add(message25);
+
+
+
     db.Messages.Add(message16);
     db.Messages.Add(message17);
     db.Messages.Add(message26);

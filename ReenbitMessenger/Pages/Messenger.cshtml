@@ -26,9 +26,9 @@
        <div class="left-part" id="left_part">
            <div class="left-part-head">
                <div class="burger_menu" id="burger_menu" onclick="BurgerCheck()">
-                   <div class="burger_line"></div>
-                   <div class="burger_line"></div>
-                   <div class="burger_line"></div>
+                   <div class="burger_line cross"></div>
+                   <div class="burger_line cross"></div>
+                   <div class="burger_line cross"></div>
                </div>
               <hr />
            </div>
@@ -100,14 +100,19 @@
        <div class="right-part" id="right_part">
            <div class="right-part-head" >
                <div class="right-part-head-image"> 
+                   <div class="chat_name">
+                       <div class="chat_name_image" id="chat_name_image">
+                           
+                       </div>
+                   </div>
                <div class="user_name_avatar tooltip"> 
-                   <img src="~/user_avatars/@ViewData["current_user_avatar"]" />
-               <p class="active-user-name">@ViewData["current_user_name"]</p>
+                   <img class="profile_image" src="~/user_avatars/@ViewData["current_user_avatar"]" />
+              <!-- <p class="active-user-name">@ViewData["current_user_name"]</p> --> 
                <a class="tooltip_text" asp-page="Index">tooltip</a>
                </div>
                
                </div>
-                <hr />
+               
                 
            </div>
            <div class="right-part-chat-window" id="chat_window" >          
@@ -116,9 +121,11 @@
            
            </div>
            <div class="right-part-write-tools" >
-               
-               <input type="text" name="message" id="input_message"/>
-               <button onclick=SendMessage()>Send</button>
+               <div class="write-tools-block" id="write-tools-block">
+                    <input type="text" name="message" id="input_message" placeholder="Start typing..." autocomplete="off"/>
+               <div class="write-tools-button-father"> <button onclick=SendMessage() id="send_button">Send</button></div>
+               </div>
+              
            </div>
        </div>
    </div>
