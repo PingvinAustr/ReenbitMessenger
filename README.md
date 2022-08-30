@@ -15,4 +15,4 @@ The solution is deployed - here is the link - https://yaroslavwebapp.azurewebsit
 
 
 ## UI Desktop:
-[!alt text](https://media.discordapp.net/attachments/627965989899993138/1014158760991797328/unknown.png?width=1354&height=676)
+![alt text](https://media.discordapp.net/attachments/627965989899993138/1014158760991797328/unknown.png?width=1354&height=676)
