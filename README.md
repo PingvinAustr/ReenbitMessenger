@@ -16,3 +16,8 @@ The solution is deployed - here is the link - https://yaroslavwebapp.azurewebsit
 
 ## UI Desktop:
 ![alt text](https://media.discordapp.net/attachments/627965989899993138/1014158760991797328/unknown.png?width=1354&height=676)
+![alt text](https://media.discordapp.net/attachments/627965989899993138/1014159184255795351/unknown.png?width=1361&height=676)
+
+## UI Mobile:
+![alt text](https://media.discordapp.net/attachments/627965989899993138/1014159416616042496/unknown.png?width=458&height=675)
+![alt text](https://media.discordapp.net/attachments/627965989899993138/1014159482655342632/unknown.png?width=458&height=676)
