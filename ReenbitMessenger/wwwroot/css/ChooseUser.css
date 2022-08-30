@@ -71,10 +71,9 @@ img{
 }
 
 .single_account_name {
+    word-break: break-word;
     font-weight: 300;
     font-size: 1.25rem;
-
-
     color: #FFFFFF;
     font-family: 'Ubuntu', sans-serif;
     margin-left: 10px;
@@ -219,3 +218,44 @@ img{
 
 
 
+ @media (max-width:1230px){
+     .bg_ellipse_2{
+         display:none;
+     }
+     .bg_ellipse_3{
+         display:none;
+     }
+ }
+
+ @media (max-width:1024px){
+     .heart{
+         display:none;
+     }
+     .accounts_list{
+         width:100%;
+     }
+     .main-container{
+         backdrop-filter:none;
+     }
+ }
+
+ @media(max-width:680px){
+     .bg_ellipse_1{
+         width:70%;
+         height:50%;
+     }
+     h1{
+         font-size:1.75rem !important;
+         width:75%;
+         word-break:break-word;
+         
+     }
+ }
+ @media (max-width:520px){
+     img{
+         display:none;
+     }
+    .login_button {
+        width:75px;
+    }
+ }

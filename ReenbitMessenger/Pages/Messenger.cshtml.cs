@@ -177,7 +177,7 @@ namespace ReenbitMessenger.Pages
         public async Task<JsonResult> OnPostReplyToMessage(string msg_id,string msg_text,string author_id)
         {
             Messages message_original = db.Messages.Where(x=>x.Id== int.Parse(msg_id)).FirstOrDefault(); 
-            Messages message_reply=new Messages() { MessageText= msg_text+"REPLY", time_sent=DateTime.Now, User_Id=int.Parse(author_id), Chat_Id=message_original.Chat_Id, ReplyToMessage=message_original  };
+            Messages message_reply=new Messages() { MessageText= msg_text, time_sent=DateTime.Now, User_Id=int.Parse(author_id), Chat_Id=message_original.Chat_Id, ReplyToMessage=message_original  };
             db.Messages.Add(message_reply);
             db.SaveChanges();
             return new JsonResult(null);
@@ -247,20 +247,53 @@ namespace ReenbitMessenger.Pages
 
         public async Task<JsonResult> OnPostSendDM(int opponent_id)
         {
-            Console.WriteLine("ASDASDASDASDASDA");
+            
 
-            Chats new_chat = new Chats() { ChatName = "DirectChat(" + opponent_id + "," + Request.Cookies["Current_user_id"] + ")" };
-            UsersChats uc1 = new UsersChats() { UserId = opponent_id, ChatId = new_chat.Id, Chat = new_chat, User = db.Users.Where(x => x.Id == opponent_id).FirstOrDefault() };
-            UsersChats uc2 = new UsersChats() { UserId = int.Parse(Request.Cookies["Current_user_id"]), ChatId = new_chat.Id, Chat = new_chat, User = db.Users.Where(x => x.Id == int.Parse(Request.Cookies["Current_user_id"])).FirstOrDefault() };
-            db.Chats.Add(new_chat);
-            db.UsersChats.Add(uc1);
-            db.UsersChats.Add(uc2);
-            db.SaveChanges();
+            int existing_chat_to_return = 0;
+            foreach (var item in db.UsersChats)
+            {
+                foreach (var item1 in db.UsersChats)
+                {
+                    if (item.ChatId==item1.ChatId)
+                    {
+                        if ((item.UserId==opponent_id && item1.UserId == int.Parse(Request.Cookies["Current_user_id"])) || (item1.UserId==opponent_id && item.UserId==int.Parse(Request.Cookies["Current_user_id"])))
+                        {
+                            int user_num = 0;
+                            foreach (var uc in db.UsersChats)
+                            {
+                                if (uc.ChatId == item.ChatId) user_num++;
+
+                            }
+
+                            if (user_num == 2)
+                            {
+                                existing_chat_to_return = item.ChatId;
+                            }
+
+                        }
+                    }
+
+                    
+                }
+            }
 
 
-            Console.WriteLine("TTTT" + db.Chats.Where(x => x.ChatName == new_chat.ChatName).FirstOrDefault().ChatName);
+            Console.WriteLine(existing_chat_to_return + "!!!!");
+            if (existing_chat_to_return == 0)
+            {
+                Chats new_chat = new Chats() { ChatName = "DirectChat(" + opponent_id + "," + Request.Cookies["Current_user_id"] + ")" };
+                UsersChats uc1 = new UsersChats() { UserId = opponent_id, ChatId = new_chat.Id, Chat = new_chat, User = db.Users.Where(x => x.Id == opponent_id).FirstOrDefault() };
+                UsersChats uc2 = new UsersChats() { UserId = int.Parse(Request.Cookies["Current_user_id"]), ChatId = new_chat.Id, Chat = new_chat, User = db.Users.Where(x => x.Id == int.Parse(Request.Cookies["Current_user_id"])).FirstOrDefault() };
+                db.Chats.Add(new_chat);
+                db.UsersChats.Add(uc1);
+                db.UsersChats.Add(uc2);
+                db.SaveChanges();
 
-            return new JsonResult(new_chat.Id);
+                existing_chat_to_return = new_chat.Id;
+                Console.WriteLine("TTTT" + db.Chats.Where(x => x.ChatName == new_chat.ChatName).FirstOrDefault().ChatName);
+            }
+
+            return new JsonResult(existing_chat_to_return);
         }
 
 

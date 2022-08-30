@@ -7,11 +7,18 @@ var msg_per_page = 20;
 var displayed_num_of_msg = -1;
 var current_page;
 var IsTimerPaused = false;
-
+var avoid500 = false;
 
 
 window.onload = function () {
-    if (getCookie("ChatToInstantOpen") != null) OpenChat(getCookie("ChatToInstantOpen"));
+    if (String(getCookie("ChatToInstantOpen")) != "null") {
+        avoid500 = true;
+        alert("A[" + getCookie("ChatToInstantOpen") + "]");
+        alert(String(getCookie("ChatToInstantOpen")) == "null");
+        OpenChat(getCookie("ChatToInstantOpen"));
+    }
+    console.log(avoid500);
+    //IsTimerPaused = true;
 }
 
 
@@ -110,7 +117,11 @@ async function OpenChat(id, page_to_open) {
             console.log(response);
             if (current_page == -1) current_page = num_pagination;
             //alert("current_page_after-1_request" + current_page);
-            LoadChat(response, num_pagination);
+            if (!avoid500) LoadChat(response, num_pagination);
+            else {
+                LoadChat(response, num_pagination);
+                avoid500 = true;
+            }
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert(errorThrown);
@@ -235,7 +246,8 @@ async function LoadChat(response,num_pagination) {
 
     
     await GetNumOfChatUsers();
-    
+    document.cookie = 'ChatToInstantOpen=' + null + '; path=/';
+    if (avoid500) avoid500 = false;
 
 }
 
@@ -394,18 +406,38 @@ function GetNumOfChatUsers() {
 }
 
 function EditingMode(msg_id) {
-    editing_mode_on = true;
-    editing_message_id = msg_id;
-    document.getElementById("input_message").value = document.getElementById("message_" + msg_id).innerHTML;
-    document.getElementById("write-tools-block").style.border = "2px solid red";
-    document.getElementById("send_button").innerHTML = "Edit";
-    
+
+    if (reply_message_id == 0) {
+        editing_mode_on = true;
+        editing_message_id = msg_id;
+        document.getElementById("input_message").value = document.getElementById("message_" + msg_id).innerHTML;
+        document.getElementById("write-tools-block").style.border = "2px solid red";
+        document.getElementById("send_button").innerHTML = "Edit";
+    }
 }
+
+
+// Get the input field
+var input = document.getElementById("input_message");
+
+// Execute a function when the user presses a key on the keyboard
+input.addEventListener("keypress", function (event) {
+    // If the user presses the "Enter" key on the keyboard
+    if (event.key === "Enter") {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        // Trigger the button element with a click
+        document.getElementById("send_button").click();
+    }
+});
+
+
 
 function SendMessage(msg_id,reply_mode) {
     message_text = document.getElementById("input_message").value;
     if (message_text != "") {
         document.getElementById("input_message").placeholder = "Start typing...";
+
         if (editing_mode_on == false && reply_message_id == 0) {
 
             var url = "?handler=SendMessage";
@@ -453,6 +485,7 @@ function SendMessage(msg_id,reply_mode) {
                 //contentType: "application/json;",
                 dataType: "json",
                 success: function (response) {
+                    
                     console.log("Successfully EDITED message via ajax:");
                     console.log(response);
                     document.getElementById("input_message").value = "";
@@ -484,6 +517,7 @@ function SendMessage(msg_id,reply_mode) {
                 //contentType: "application/json;",
                 dataType: "json",
                 success: function (response) {
+                   
                     console.log("Successfully REPLIED TO message via ajax:");
                     console.log(response);
                     reply_message_id = 0;
@@ -502,7 +536,7 @@ function SendMessage(msg_id,reply_mode) {
                         //alert("B" + displayed_num_of_msg);
                         OpenChat(opened_chat_id, current_page);
                     }
-
+                    IsTimerPaused = false;
                 },
                 error: function (XMLHttpRequest, textStatus, errorThrown) {
                     alert(errorThrown);
@@ -542,36 +576,44 @@ function DeleteMessage(message_id) {
 }
 
 function ReplyToMessage(message_id) {
-    //alert("Please enter reply text to input field and press the button!");
-    let block = document.getElementById("right-part-write-tools");
-    let rep_block = document.createElement("div");
-    rep_block.classList.add('reply_notification');
-    rep_block.id = "rep_block";
-    rep_block.innerHTML = "<div>Reply to message: <span class='reply_msg'>" + document.getElementById("message_" + message_id).innerHTML + "</span></div>";
 
-    document.getElementById("message_body" + message_id).classList.add("reply_anim");
+    if (editing_mode_on == false) {
+        //alert("Please enter reply text to input field and press the button!");
+        let block = document.getElementById("right-part-write-tools");
+        let rep_block = document.createElement("div");
+        rep_block.classList.add('reply_notification');
+        rep_block.id = "rep_block";
+        let string = document.getElementById("message_" + message_id).innerHTML;
+        if (string.length >= 75) string = string.substr(0, 75)+"...";
+        rep_block.innerHTML = "<div>Reply to message: <span class='reply_msg'>" + string + "</span></div>";
 
-    document.getElementById("send_button").innerHTML = "Reply";
+        document.getElementById("message_body" + message_id).classList.add("reply_anim");
+        IsTimerPaused = true;
 
-    document.querySelectorAll("right-part-write-tools").style = "justify-content:flex-start";
+        document.getElementById("send_button").innerHTML = "Reply";
 
-    block.insertBefore(rep_block, document.getElementById("write-tools-block"));
+        document.querySelectorAll("right-part-write-tools").style = "justify-content:flex-start";
 
-    reply_message_id = message_id;
+        block.insertBefore(rep_block, document.getElementById("write-tools-block"));
 
-    let cancel = document.createElement("div");
-    cancel.classList.add("cancel_cross");
-    cancel.innerHTML = "&#10006";
-    cancel.addEventListener("click", function () {       
-        rep_block.remove();
-        document.getElementById("send_button").innerHTML = "Send";
-        reply_message_id = 0;
-        document.querySelectorAll("right-part-write-tools").style = "justify-content:center";
-    });
+        reply_message_id = message_id;
+
+        let cancel = document.createElement("div");
+        cancel.classList.add("cancel_cross");
+        cancel.innerHTML = "&#10006";
+        cancel.addEventListener("click", function () {
+            rep_block.remove();
+            document.getElementById("send_button").innerHTML = "Send";
+            reply_message_id = 0;
+            document.querySelectorAll("right-part-write-tools").style = "justify-content:center";
+            document.getElementById("message_body" + message_id).classList.remove("reply_anim");
+            IsTimerPaused = false;
+
+        });
         rep_block.appendChild(cancel);
-    
 
-   
+
+    }
     
 }
 
@@ -595,7 +637,8 @@ function BurgerCheck() {
             item.style.width = "auto";
         });
 
-        document.getElementById("left_part").style.width = "15vw";
+        //document.getElementById("left_part").style.width = "15vw";
+        document.getElementById("left_part").classList.add("width15");
         //document.getElementById("right_part").style.width = "85vw";
 
         burger_opened = false;
@@ -615,7 +658,8 @@ function BurgerCheck() {
         hide_show2.forEach(item => {
             item.style.width = "calc(25% - 2px);";
         });
-        document.getElementById("left_part").style.width = "45vw";
+        //document.getElementById("left_part").style.width = "45vw";
+        document.getElementById("left_part").classList.remove("width15");
         //document.getElementById("right_part").style.width = "55vw";
         burger_opened = true;
     }

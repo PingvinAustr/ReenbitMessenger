@@ -118,12 +118,16 @@ static void AddCustomerData(WebApplication app)
         ChatName = "DirectChat6"
     };
 
-   
+    UsersChats userschats_direct1 = new UsersChats() { UserId = 2, User = user2, ChatId = 3, Chat = direct_chat3 }; //Bob - 3 - DM
+    UsersChats userschats_direct2 = new UsersChats() { UserId = 3, User = user3, ChatId = 3, Chat = direct_chat3 }; //Jango - 3 - DM    
+
+    UsersChats userschats_direct3 = new UsersChats() { UserId = 4, User = user4, ChatId = 4, Chat = direct_chat4 }; //Mary - 4 - DM
+    UsersChats userschats_direct4 = new UsersChats() { UserId = 6, User = user6, ChatId = 4, Chat = direct_chat4 }; //Svyatoslav - 4 - DM    
+
 
     /*
     UsersChats userschats_direct1 = new UsersChats() { UserId=1,User=user1,ChatId=3,Chat=direct_chat3 }; //Tom - 3 - DM
-    UsersChats userschats_direct2 = new UsersChats() { UserId=2,User=user2,ChatId=3,Chat=direct_chat3 }; //Bob - 3 - DM
-    */
+    UsersChats userschats_direct2 = new UsersChats() { UserId=2,User=user2,ChatId=3,Chat=direct_chat3 }; //Bob - 3 - DM    
 
     UsersChats userschats_direct3 = new UsersChats() { UserId = 2, User = user2, ChatId = 4, Chat = direct_chat4 }; //Bob - 4 - DM
     UsersChats userschats_direct4 = new UsersChats() { UserId = 5, User = user5, ChatId = 4, Chat = direct_chat4 }; //Helen - 4 - DM
@@ -133,7 +137,7 @@ static void AddCustomerData(WebApplication app)
 
     UsersChats userschats_direct7 = new UsersChats() { UserId = 3, User = user3, ChatId = 6, Chat = direct_chat6 }; //Bill - 6 - DM
     UsersChats userschats_direct8 = new UsersChats() { UserId = 1, User = user1, ChatId = 6, Chat = direct_chat6 }; //Tom - 6 - DM
-
+    */
 
 
     Chats group_all_chat = new Chats
@@ -152,9 +156,10 @@ static void AddCustomerData(WebApplication app)
     {
         ChatName = "DirectChat7"
     };
+    /*
     UsersChats userschats_direct9 = new UsersChats() { UserId = 1, User = user1, ChatId = 8, Chat = direct_chat7 }; //Tom - 8 - DM
     UsersChats userschats_direct10 = new UsersChats() { UserId = 4, User = user4, ChatId = 8, Chat = direct_chat7 };//Jack - 8 - DM
-
+    */
 
 
     UsersChats usersChat1 = new UsersChats(); //Tom - 1 - MathChat (Tom and Helen DM)
@@ -206,14 +211,14 @@ static void AddCustomerData(WebApplication app)
     db.UsersChats.Add(usersChats4);
     db.UsersChats.Add(usersChats5);
     db.UsersChats.Add(usersChats6);
-    //db.UsersChats.Add(userschats_direct1);
-    //db.UsersChats.Add(userschats_direct2);
+    db.UsersChats.Add(userschats_direct1);
+    db.UsersChats.Add(userschats_direct2);
     db.UsersChats.Add(userschats_direct3);
     db.UsersChats.Add(userschats_direct4);
-    db.UsersChats.Add(userschats_direct5);
+    /*db.UsersChats.Add(userschats_direct5);
     db.UsersChats.Add(userschats_direct6);
     db.UsersChats.Add(userschats_direct7);
-    db.UsersChats.Add(userschats_direct8);
+    db.UsersChats.Add(userschats_direct8);*/
     
     db.UsersChats.Add(all_users_chat1);
     db.UsersChats.Add(all_users_chat2);
@@ -221,10 +226,10 @@ static void AddCustomerData(WebApplication app)
     db.UsersChats.Add(all_users_chat4);
     db.UsersChats.Add(all_users_chat5);
     db.UsersChats.Add(all_users_chat6);
-
+    /*
     db.UsersChats.Add(userschats_direct9);
     db.UsersChats.Add(userschats_direct10);
-
+    */
    
 
     db.SaveChanges();
@@ -254,7 +259,9 @@ static void AddCustomerData(WebApplication app)
     Messages message214 = new Messages() { MessageText = "You are welcome", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 25, 19, 49, 50) };
     Messages message215 = new Messages() { MessageText = "Wanna hang out tonight?", User_Id = user5.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 25, 19, 50, 50) };
     Messages message216 = new Messages() { MessageText = "Sure!", User_Id = user1.Id, Chat_Id = chat1.Id, time_sent = new DateTime(2022, 8, 25, 19, 51, 50) };
-    
+
+    Messages msg3 = new Messages() { MessageText = "Hello!", User_Id = user2.Id, Chat_Id = direct_chat3.Id, time_sent = new DateTime(2022, 8, 25, 19, 51, 50) };
+    Messages msg4 = new Messages() { MessageText = "Hello!", User_Id = user4.Id, Chat_Id = direct_chat4.Id, time_sent = new DateTime(2022, 8, 25, 19, 51, 50) };
 
 
 
@@ -272,6 +279,8 @@ static void AddCustomerData(WebApplication app)
 
 
 
+    db.Messages.Add(msg3);
+    db.Messages.Add(msg4);
     db.Messages.Add(message28);
     db.Messages.Add(message29);
     db.Messages.Add(message210);
