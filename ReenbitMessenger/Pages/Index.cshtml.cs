@@ -4,54 +4,39 @@ using ReenbitMessenger.DataAccess;
 
 namespace ReenbitMessenger.Pages
 {
-    public class IndexModel : PageModel
+    public class ChooseUserModel : PageModel
     {
-
-        public readonly AppDbContext db;
-
-        public List<Customer> Customers { get; set; }
-        public List<User> Users { get; set; }
-        public List<Chats> Chats { get; set; }
-        public List<Messages> Messages { get; set; }
-
-        public IndexModel(AppDbContext db)
+        public ChooseUserModel(AppDbContext db)
         {
             this.db = db;
         }
+
+        public readonly AppDbContext db;
+
+      
+        public List<User> Users { get; set; }
+       
         public void OnGet()
         {
-            Users = db.Users.ToList();
-            Chats = db.Chats.ToList();
+            //Refresh ID of current logged in user to 0 (log out)
+            Response.Cookies.Append("Current_user_id", "0");
+            Users =db.Users.ToList();
 
-            Customers = db.Customers.ToList();
-            Messages = db.Messages.ToList();
-
-            foreach (var user in Users)
-            {
-                Console.WriteLine("User - " + user.Name);
-                var messages_of_user = Messages.Where(x => x.User == user).ToList();
-
-                if (messages_of_user.Count > 0)
-                {
-                    Console.WriteLine("has written messages");
-                }
-
-            }
-
-
-
+            
         }
 
-        public void OnPostUpdate()
+        //Sending form that will redirect current user to main messenger page
+        public IActionResult OnPostLogin(int id)
+
         {
             Users = db.Users.ToList();
-            Chats = db.Chats.ToList();
-            Customers = db.Customers.ToList();
-            /*foreach (var item in Customers)
-            {
-                item.CustomerName += " Changed";
-            }*/
-            db.SaveChanges();
+            Console.ForegroundColor = ConsoleColor.Red;
+            //Console.WriteLine("User has chosen to log in using USER_ID=["+id+"]");
+            Console.ResetColor();
+            string url = Url.Page("Messenger", new { id = id });
+            return Redirect(url);
+          
         }
+
     }
 }

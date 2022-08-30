@@ -10,8 +10,6 @@ namespace ReenbitMessenger.DataAccess
         public string Name { get; set; }
         public string Surname { get; set; }
         public string UserAvatarImage { get; set; }
-        // public UsersInChats InChats { get; set; }
-        //public List<Chats> ChatsOfUser { get; set; } = new List<Chats>();
         public IList<UsersChats> UsersChats { get; set; }
     }
 }

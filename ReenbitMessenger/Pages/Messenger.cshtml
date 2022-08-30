@@ -1,0 +1,149 @@
+﻿@page 
+@using ReenbitMessenger.Pages
+@model ReenbitMessenger.Pages.IndexModel
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+
+
+<head>
+    <title>Messenger - Test Task - Chushenko Yaroslav</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href=~/css/site.css />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+</head>
+
+
+
+<body>
+
+   <div class="main-container">
+       <div class="left-part" id="left_part">
+           <div class="left-part-head">
+               <div class="burger_menu" id="burger_menu" onclick="BurgerCheck()">
+                   <div class="burger_line cross"></div>
+                   <div class="burger_line cross"></div>
+                   <div class="burger_line cross"></div>
+               </div>
+              <hr />
+           </div>
+           <div class="left-part-groups custom-scrollbar">
+
+                @foreach (var item in @Model.GroupChatsOfThisUser)
+                {
+                   
+                    <div class="chat-item" onclick="OpenChat(@item.Id,null)">
+                        <div class="chat-item-left">
+                        <img src="~/user_avatars/chat.png"/>    
+                        </div>
+                        <div class="chat-item-right">
+                        <div>@item.ChatName</div>    
+                        <div>
+                                @{
+                                    string html_raw="";
+                                    int users_in_chat = 0;
+                                }
+                                @foreach (var user_chat in @Model.UsersChats)
+                                {
+
+                                    if (user_chat.ChatId == item.Id)
+                                    {
+                                        html_raw += user_chat.User.Name + " " + user_chat.User.Surname+", ";
+                                        users_in_chat++;
+
+                                    }
+                                }
+                                @{
+                                    html_raw = html_raw.Substring(0, html_raw.Length - 2);
+                                    if (html_raw.Length >= 100) html_raw = html_raw.Substring(0, 100) + "...";
+                                    @Html.Raw("<span style='color:#ff7600'>"+users_in_chat+" members</span>");
+                                }
+
+                        </div>
+                        </div>   
+                   
+                    </div>
+                }
+                
+           </div>
+
+           <div class="left-part-direct custom-scrollbar">
+               @foreach (var item in @Model.DirectChatsOfThisUser)
+                {
+                    
+                    <div class="chat-item" onclick="OpenChat(@item.Id,null)" >
+                        <div class="chat-item-left">
+
+                            @{
+                                var current_friend = Model.Users.Where(x => (x.Name + " " + x.Surname) == item.ChatName).FirstOrDefault();
+                               
+                            }   
+                            
+                            <img src="~/user_avatars/@current_friend.UserAvatarImage"/>    
+                        
+                        
+                        
+                        
+                        </div>
+                        <div class="chat-item-right">
+                        <div>@item.ChatName</div>    
+                        
+                        </div>   
+                   
+                    </div>
+                }
+           </div>
+       </div>
+       <div class="right-part" id="right_part">
+           <div class="right-part-head" >
+               <div class="right-part-head-image"> 
+                   <div class="chat_name">
+                       <div class="chat_name_image" id="chat_name_image">
+                           
+                       </div>
+                   </div>
+               <div class="user_name_avatar tooltip"> 
+                   <img class="profile_image" src="~/user_avatars/@ViewData["current_user_avatar"]" />
+              <!-- <p class="active-user-name">@ViewData["current_user_name"]</p> --> 
+               <!-- <a class="tooltip_text" asp-page="Index">tooltip</a> -->
+               <div class="tooltip_text"> 
+                   @ViewData["current_user_name"]
+                   <a asp-page="Index">Log out</a>
+               </div>
+               </div>
+               
+               </div>
+               
+                
+           </div>
+           <div class="right-part-chat-window" id="chat_window" >          
+              
+               <div id="choose_chat_div">Please open a chat to read!</div>
+           
+           </div>
+           <div class="right-part-write-tools" id="right-part-write-tools" >
+               <div class="write-tools-block" id="write-tools-block">
+                    <input type="text" name="message" id="input_message" placeholder="Start typing..." autocomplete="off"/>
+               <div class="write-tools-button-father"> <button onclick=SendMessage() id="send_button">Send</button></div>
+               </div>
+              
+           </div>
+       </div>
+   </div>
+
+
+   @Html.AntiForgeryToken()
+  
+   <script src=~/js/site.js> </script>
+   
+
+   
+   
+   
+</body>

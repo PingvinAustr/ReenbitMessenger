@@ -1,0 +1,261 @@
+﻿h1 {
+    margin:0;
+    width:100%;
+    height:20%;
+    display:flex;
+    align-items:center;
+
+    padding:30px 0 30px 15%;
+    font-family: 'Prompt';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 2rem;
+    color:white;
+}
+
+form{
+    margin:0 0 0 10px;
+}
+
+body {
+    background: #242132;
+    font-family: 'Montserrat', sans-serif;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+img{
+    width:75px;
+    height:75px;
+}
+.main-container {
+    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
+    background: radial-gradient(#16141e, transparent);
+    z-index: 0;
+    position: absolute;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+    height: 80%;
+    border-radius: 50px;
+}
+.sub-container{
+    height:80%;
+    width:87%;
+    display:flex;
+    flex-direction:row;
+}
+
+.accounts_list{
+    height:90%;
+    width:50%;
+    overflow-y:auto;
+    overflow-x:hidden;
+   
+}
+.single_account {
+    padding:0 0 0 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 90%;
+    height: 105px;
+   
+    border-radius:40px;
+    margin:0 auto;
+    margin-top: 10px;
+}
+
+.single_account_name {
+    word-break: break-word;
+    font-weight: 300;
+    font-size: 1.25rem;
+    color: #FFFFFF;
+    font-family: 'Ubuntu', sans-serif;
+    margin-left: 10px;
+    width: 45%;
+}
+.single_account:first-child {
+    margin-top: 0px;
+}
+
+
+
+
+.bottom_circle {
+    position: absolute;
+    top: 55%;
+    left: -15%;
+    width: 40%;
+    height: 66%;
+    border-radius: 50%;
+    background: #f8c93d;
+    animation: bottom_figure_moves 5s infinite alternate;
+    animation-timing-function: linear;
+}
+
+.upper_triang {
+    border: 350px solid transparent;
+    border-top: 400px solid #e45e6a;
+    width: 0%;
+    margin-left: 105%;
+    transform: rotate(-50deg);
+    margin-top: -180px;
+    animation-delay: 2s;
+    animation: top_figure_moves 7s infinite alternate;
+    animation-timing-function: linear;
+}
+
+@keyframes bottom_figure_moves {
+    from {
+        top: 55%;
+    }
+
+    to {
+        top: 35%;
+    }
+}
+
+
+@keyframes top_figure_moves {
+    from {
+        margin-left: 105%;
+    }
+
+    to {
+        margin-left: 95%;
+    }
+}
+
+.login_button {
+    font-family: 'Ubuntu', sans-serif;
+    color:white;
+    font-size:1rem;
+    font-weight:200;
+    width: 125px;
+    height: 50px;
+    
+    border: 2px solid #FDA62B;
+    border-radius: 20px;
+
+    cursor: pointer;
+    transition: .5s;
+    background:transparent;
+}
+    .login_button:hover {
+        background: #FDA62B;
+        color: #242132;
+        border: 2px solid transparent;
+    }
+
+
+.bg_ellipse_1 {
+    position: absolute;
+    z-index: 0;
+    left: -8%;
+    top: 8%;
+    border-radius: 50%;
+    width: 733px;
+    height: 733px;
+    background: linear-gradient(149.78deg, #4300EA 13.4%, #7257EF 34.19%, #7194EC 57%, #E0ADFF 85.2%);
+}
+
+.bg_ellipse_2 {
+    position: absolute;
+    left: 72%;
+    top: -15%;
+    border-radius: 50%;
+    width: 500px;
+    height: 500px;
+    background: linear-gradient(220.04deg, #A232C9 15.62%, #6852D8 42.56%, #C3C3D6 86.88%);
+}
+
+.bg_ellipse_3 {
+    position: absolute;
+    left: 50%;
+    top: 70%;
+    border-radius:50%;
+    width: 825.96px;
+    height: 814px;
+    background: linear-gradient(180.74deg, #0393FF 0.63%, #2CCCFF 44.13%, #4207D6 99.36%);
+}
+
+.heart {
+    padding:7% 0 0 10%;
+    width: 40%;
+    height: 75%;
+    background: url(.png);
+    filter: drop-shadow(0px 0px 0px rgba(255, 255, 255, 0.5));
+    transform: matrix(-1, 0, 0, 1, 0, 0);
+    transform: rotateY(0deg)
+}
+
+
+/* custom scrollbar */
+::-webkit-scrollbar {
+    width: 20px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    transition:1s;
+    background-color: #B8DFF2;
+    border-radius: 20px;
+    border: 6px solid transparent;
+    background-clip: content-box;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #004477;
+    }
+
+
+
+ @media (max-width:1230px){
+     .bg_ellipse_2{
+         display:none;
+     }
+     .bg_ellipse_3{
+         display:none;
+     }
+ }
+
+ @media (max-width:1024px){
+     .heart{
+         display:none;
+     }
+     .accounts_list{
+         width:100%;
+     }
+     .main-container{
+         backdrop-filter:none;
+     }
+ }
+
+ @media(max-width:680px){
+     .bg_ellipse_1{
+         width:70%;
+         height:50%;
+     }
+     h1{
+         font-size:1.75rem !important;
+         width:75%;
+         word-break:break-word;
+         
+     }
+ }
+ @media (max-width:520px){
+     img{
+         display:none;
+     }
+    .login_button {
+        width:75px;
+    }
+ }
