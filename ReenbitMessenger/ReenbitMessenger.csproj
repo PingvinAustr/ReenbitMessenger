@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Folder Include="DataAccess\" />
+    <Folder Include="Pages\Shared\" />
     <Folder Include="wwwroot\layout_images\" />
     <Folder Include="wwwroot\user_avatars\" />
   </ItemGroup>

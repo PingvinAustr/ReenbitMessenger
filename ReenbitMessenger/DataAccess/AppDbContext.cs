@@ -22,6 +22,6 @@ namespace ReenbitMessenger.DataAccess
         public DbSet<UsersChats> UsersChats { get; set; }
         public DbSet<Messages> Messages { get; set; }   
 
-        //public DbSet<UsersInChats> UsersInChats { get; set; }
+       
     }
 }

@@ -1,4 +1,5 @@
-﻿var opened_chat_id = 0;
+﻿//Global variables for corresponding functions
+var opened_chat_id = 0;
 var editing_mode_on = false;
 var editing_message_id = 0;
 var reply_message_id = 0;
@@ -10,34 +11,30 @@ var IsTimerPaused = false;
 var avoid500 = false;
 
 
+//Onload function (it is used for opening of new DM chat after user chooses this option in the popup)
 window.onload = function () {
     if (String(getCookie("ChatToInstantOpen")) != "null") {
         avoid500 = true;
-        alert("A[" + getCookie("ChatToInstantOpen") + "]");
-        alert(String(getCookie("ChatToInstantOpen")) == "null");
         OpenChat(getCookie("ChatToInstantOpen"));
     }
-    console.log(avoid500);
-    //IsTimerPaused = true;
+    //console.log(avoid500);
 }
 
 
-
+//Function that refreshes the chat every 5s (to load new messages from opponents)
 const interval = setInterval(function () {
-    // method to be executed;
+  
     if (!IsTimerPaused) {
-        if (opened_chat_id != 0) {
-            console.log("interval_current_page" + " " + current_page);
-            console.log("interval_opened_chat" + " " + opened_chat_id);
+        if (opened_chat_id != 0) {           
             OpenChat(opened_chat_id, current_page);
 
         }
-        console.log("timer tick");
+        //console.log("timer tick");
     }
 }, 5000);
 
 
-
+//Function that returns cookie value by name
 function getCookie(name) {
     // Split cookie string and get all individual name=value pairs in an array
     var cookieArr = document.cookie.split(";");
@@ -58,6 +55,8 @@ function getCookie(name) {
     return null;
 }
 
+
+//AJAX  function that returns num of pages on chat
 function NumOfMessagesInChat(id) {
    
     var url = "?handler=PaginationFunc";
@@ -71,9 +70,9 @@ function NumOfMessagesInChat(id) {
         //contentType: "application/json;",
         dataType: "text",
         success: function (response) {
-            console.log("Successfully retrieved NUM of messages from chat via ajax:");
+            
             num_pages = String(response);
-            //console.log("[" + num + "]");
+           
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             alert(errorThrown);
@@ -82,20 +81,15 @@ function NumOfMessagesInChat(id) {
   
 }
 
+
+
+//AJAX function that opens chat by id and needed pagination page
 async function OpenChat(id, page_to_open) {
-    //alert("OpenChat:" + page_to_open);
     if (page_to_open == null) page_to_open = -1;
-    console.log("OpenChat,page_to_open:"+page_to_open);
-  
-    current_page = page_to_open;
-
-     
-
-   
+    //console.log("OpenChat,page_to_open:"+page_to_open); 
+    current_page = page_to_open; 
     await NumOfMessagesInChat(id);
 
-    
-    //alert("[" + num_pages + "]");
     let num_pagination = Math.ceil(parseInt(num_pages) / msg_per_page);
     if (num_pagination == 0) num_pagination = 1;
     
@@ -113,10 +107,10 @@ async function OpenChat(id, page_to_open) {
         //contentType: "application/json;",
         dataType: "json",
         success: function (response) {
-            console.log("Successfully retrieved messages from chat via ajax:");
-            console.log(response);
+            //console.log("Successfully retrieved messages from chat via ajax:");
+            //console.log(response);
             if (current_page == -1) current_page = num_pagination;
-            //alert("current_page_after-1_request" + current_page);
+          
             if (!avoid500) LoadChat(response, num_pagination);
             else {
                 LoadChat(response, num_pagination);
@@ -130,35 +124,12 @@ async function OpenChat(id, page_to_open) {
     
 
 }
-/*
-async function GetUserNameById(user_id) {
-  
-    var url = "?handler=GetUserNameById";
-     $.ajax({
-        type: "POST",
-        url: url,
-        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
-        data: {
-            user_id: user_id
-        },
-        //contentType: "application/json;",
-        dataType: "text",
-         success: function (response) {
-             console.log("REPNAME" + response);
-     
-             return response;
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            alert(errorThrown);
-        }
-    });
-}
-*/
 
+
+//AJAX function that loads chat messages
 async function LoadChat(response,num_pagination) {
 
     document.getElementById("write-tools-block").style.display = "flex";
-    //alert("!" + num_pagination);
     let chat_name = "";
     let num_of_users = 0;
 
@@ -178,24 +149,15 @@ async function LoadChat(response,num_pagination) {
         let message_author_name = response[msg_object]["user"]["name"];
         let message_author_surname = response[msg_object]["user"]["surname"];
 
-        /*
-        let reply_message_author_id = null;
-        let reply_message_author_name = "";
-        if (response[msg_object]["reply"] != null) {
-            reply_message_author_id = response[msg_object]["reply"]["user_Id"];
-            reply_message_author_name = GetUserNameById(reply_message_author_id);
-            alert(reply_message_author_name);
-        }
-        */
-
+        
         let message_reply_to = null;
         let time_sent = response[msg_object]["time_sent"];
         time_sent = String(time_sent).replace("T", " ");
         time_sent = String(time_sent).substr(0, time_sent.length - 3);
-       // 2022 - 08 - 25 19: 51
+  
         if (time_sent.length > 16) time_sent = String(time_sent).substr(0, 16);
 
-        console.log(time_sent);
+        //console.log(time_sent);
         let author_img = response[msg_object]["user"]["userAvatarImage"];
         if (response[msg_object]["reply"] != null) message_reply_to = response[msg_object]["reply"]["messageText"];
         else message_reply_to = null;
@@ -206,9 +168,7 @@ async function LoadChat(response,num_pagination) {
             reply_string = "RE: <div style='display:inline-block; color: gray'>" + message_reply_to+"</div>";
         }
 
-        //alert(parseInt(getCookie("Current_user_id")) == parseInt(message_author_id));
-        //alert("[" + getCookie("Current_user_id") + "]" + "[" + message_author_id + "]");
-     
+  
         if (parseInt(getCookie("Current_user_id")) == parseInt(message_author_id)) {     //"<div class='my_spans'> <span onclick='EditingMode(" + message_id + ")'> Edit</span > <span>DeleteMe</span> <span onclick='DeleteMessage(" + message_id + ")'" + " > DeleteAll</span ></div>"
             let img = "<div class='small_img_container'><img class='small_img' src='../user_avatars/" + author_img + "'/></div>";
             let myspans = "<div class='my_spans'> <span onclick='EditingMode(" + message_id + ")'> Edit</span >  <span onclick='DeleteMessage(" + message_id + ")'" + " > Delete</span ></div>";
@@ -237,10 +197,7 @@ async function LoadChat(response,num_pagination) {
     }
    
 
-    //let html_pagination_div = $(pagination_div);
-   
-    //alert(pagination_div);
-
+  
 
     
 
@@ -252,6 +209,7 @@ async function LoadChat(response,num_pagination) {
 }
 
 
+//Function that opens popup that allows to create new DM room
 function OpenAuthorPopup(author_id, author_img,author_name,author_surname) {    
     let popup = document.createElement("div");
     popup.classList.add("author_dm_popup");
@@ -297,21 +255,18 @@ function OpenAuthorPopup(author_id, author_img,author_name,author_surname) {
     surname_block.innerHTML = "<div class='popup_span'> Surname: </div>" + author_surname;
     flex_parent.appendChild(surname_block);
 
-    /*
-    let form_div = document.createElement("div"); ///?handler=login
-    form_div.innerHTML = "<form method='post' action='/Messenger?handler=SendDM'><input name='opponent_id' value='"+author_id + "'> <button class='popup_button'>Send DM</button></form>";
-    name_row.appendChild(form_div);*/
-    
+  
     let button_block = document.createElement("div");
     button_block.classList.add("popup_button");
     button_block.innerHTML = "Send DM";
     button_block.addEventListener("click", function () { SendDM(author_id) });
     name_row.appendChild(button_block);
     
-    //document.querySelectorAll(".author_dm_popup").style.display = "block";
+
     
 }
 
+//AJAX function that allows to send DM (create new DM chat)
 function SendDM(opponent_id) {
   
 
@@ -342,6 +297,7 @@ function SendDM(opponent_id) {
 
 }
 
+//AJAX Get request to update page
 function GetRequest(chat_to_open) {
     var url = "";
     $.ajax({
@@ -354,7 +310,7 @@ function GetRequest(chat_to_open) {
         //contentType: "application/json;",
         dataType: "text",
         success: function (response) {
-            console.log("get");
+            
             document.location.reload();
             
         },
@@ -364,7 +320,7 @@ function GetRequest(chat_to_open) {
     });
 }
 
-
+//AJAX function to get number of chat users
 function GetNumOfChatUsers() {
     var url = "?handler=GetNumOfChatUsers";
     $.ajax({
@@ -377,14 +333,10 @@ function GetNumOfChatUsers() {
         //contentType: "application/json;",
         dataType: "json",
         success: function (response) {
-            //console.log(response[0]);
+           
             let info = String(response);
 
-            let chat_name_block = document.getElementById("chat_name_image");
-            /*chat_name_block.childNodes.forEach(item => {
-                item.remove();
-                alert(item);
-            })*/
+            let chat_name_block = document.getElementById("chat_name_image");            
             chat_name_block.innerHTML = "";
 
 
@@ -405,6 +357,7 @@ function GetNumOfChatUsers() {
     });
 }
 
+//Function that turns on layout editing mode
 function EditingMode(msg_id) {
 
     if (reply_message_id == 0) {
@@ -417,7 +370,7 @@ function EditingMode(msg_id) {
 }
 
 
-// Get the input field
+// Adding option to send messages with "Enter" button
 var input = document.getElementById("input_message");
 
 // Execute a function when the user presses a key on the keyboard
@@ -433,6 +386,8 @@ input.addEventListener("keypress", function (event) {
 
 
 
+
+//AJAX function to send messages. It has 3 modes - regular, reply mode, editing mode. 
 function SendMessage(msg_id,reply_mode) {
     message_text = document.getElementById("input_message").value;
     if (message_text != "") {
@@ -453,8 +408,8 @@ function SendMessage(msg_id,reply_mode) {
                 //contentType: "application/json;",
                 dataType: "json",
                 success: function (response) {
-                    console.log("Successfully sent message via ajax:");
-                    console.log(response);
+                    //console.log("Successfully sent message via ajax:");
+                    //console.log(response);
                     document.getElementById("input_message").value = "";
                     if (displayed_num_of_msg == msg_per_page) {
                         //alert("SendMessage_A" + displayed_num_of_msg + "___" + msg_per_page);
@@ -486,8 +441,8 @@ function SendMessage(msg_id,reply_mode) {
                 dataType: "json",
                 success: function (response) {
                     
-                    console.log("Successfully EDITED message via ajax:");
-                    console.log(response);
+                    //console.log("Successfully EDITED message via ajax:");
+                    //console.log(response);
                     document.getElementById("input_message").value = "";
                     editing_message_id = null;
                     editing_mode_on = false;
@@ -518,8 +473,8 @@ function SendMessage(msg_id,reply_mode) {
                 dataType: "json",
                 success: function (response) {
                    
-                    console.log("Successfully REPLIED TO message via ajax:");
-                    console.log(response);
+                    //console.log("Successfully REPLIED TO message via ajax:");
+                    //console.log(response);
                     reply_message_id = 0;
 
 
@@ -550,7 +505,7 @@ function SendMessage(msg_id,reply_mode) {
    
 }
 
-
+//AJAX function to delete messages
 function DeleteMessage(message_id) {
     var url = "?handler=DeleteMessage";
     return $.ajax({
@@ -563,8 +518,8 @@ function DeleteMessage(message_id) {
         //contentType: "application/json;",
         dataType: "json",
         success: function (response) {
-            console.log("Successfully delete message for ALL via ajax:");
-            console.log(response);
+            //console.log("Successfully delete message for ALL via ajax:");
+            //console.log(response);
             if (displayed_num_of_msg == 1) { OpenChat(opened_chat_id, current_page - 1); }
             else { OpenChat(opened_chat_id, current_page); }
 
@@ -575,6 +530,7 @@ function DeleteMessage(message_id) {
     });
 }
 
+//Function to create reply to message layout
 function ReplyToMessage(message_id) {
 
     if (editing_mode_on == false) {
@@ -617,6 +573,8 @@ function ReplyToMessage(message_id) {
     
 }
 
+
+//Function to open/close burger menu
 var burger_opened = true;
 function BurgerCheck() {
 
@@ -637,9 +595,9 @@ function BurgerCheck() {
             item.style.width = "auto";
         });
 
-        //document.getElementById("left_part").style.width = "15vw";
+  
         document.getElementById("left_part").classList.add("width15");
-        //document.getElementById("right_part").style.width = "85vw";
+   
 
         burger_opened = false;
     }
@@ -658,9 +616,9 @@ function BurgerCheck() {
         hide_show2.forEach(item => {
             item.style.width = "calc(25% - 2px);";
         });
-        //document.getElementById("left_part").style.width = "45vw";
+    
         document.getElementById("left_part").classList.remove("width15");
-        //document.getElementById("right_part").style.width = "55vw";
+        
         burger_opened = true;
     }
 }

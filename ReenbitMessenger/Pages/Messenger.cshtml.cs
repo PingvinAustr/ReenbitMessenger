@@ -4,6 +4,7 @@ using ReenbitMessenger.DataAccess;
 using System.Web;
 namespace ReenbitMessenger.Pages
 {
+    //Class for further usage in AJAX request response
     public class AJAX_Response
     {
         public int Id { get; set; }
@@ -18,6 +19,7 @@ namespace ReenbitMessenger.Pages
     public class IndexModel : PageModel
     {
         
+        //DB Lists & helper lists initialization
         public readonly AppDbContext db;
 
         public List<Customer> Customers { get; set; }
@@ -29,12 +31,14 @@ namespace ReenbitMessenger.Pages
         public List<Chats> GroupChatsOfThisUser = new List<Chats>();
         public List<Chats> DirectChatsOfThisUser = new List<Chats>();
         
-        //public Dictionary<int,string> UserAvatars { get; set; }
+       
         public IndexModel(AppDbContext db)
         {
             this.db = db;
         }
 
+
+        //Function that divides chats of current user into group chats and direct chats (to output on front-end)
         public void GetGroupChatsOfUser(int user_id)
         {
             Users = db.Users.ToList();
@@ -42,8 +46,7 @@ namespace ReenbitMessenger.Pages
             UsersChats=db.UsersChats.ToList();
             List<UsersChats> AllChatsOfThisUser = db.UsersChats.Where(x => x.UserId == user_id).ToList();
 
-           
-
+          
             foreach (var chat in AllChatsOfThisUser)
             {
                 int num_of_users_in_current_chat=UsersChats.Where(x=>x.ChatId == chat.ChatId).Count();                
@@ -70,12 +73,10 @@ namespace ReenbitMessenger.Pages
        
         User current_user = new User();
 
+      
        
-        public async Task<JsonResult> OnPostUpdateQRCodeAsync(int id, string name, string description)
-        {
-            return new JsonResult(description);
-        }
 
+        //AJAX-handler function that returns part of messages of selected chat (up to 20 messages per page)
         public async Task<JsonResult> OnPostOpenChat(int chat_id, int page_to_open)
         {
            List<AJAX_Response> Response_list = new List<AJAX_Response>();
@@ -83,8 +84,8 @@ namespace ReenbitMessenger.Pages
 
            List<Messages> messages_from_current_chat = new List<Messages>();
            messages_from_current_chat=db.Messages.Where(x=>x.Chat_Id==chat_id).ToList();
-            //Console.WriteLine(messages_from_current_chat.Count()+"!!!");
-
+            
+            //Count which indexes will suit current pagination page
             int msg_from = 20 * page_to_open - 20;
             int msg_to = 20*page_to_open-1;
 
@@ -101,11 +102,10 @@ namespace ReenbitMessenger.Pages
                 msg_to = messages_from_current_chat.Count - 1;
             }
 
-            Console.WriteLine(msg_from + " " + msg_to);
+            //Console.WriteLine(msg_from + " " + msg_to);
 
-            //0-4
-            //5-9
-            //10-14
+            
+            //Create AJAX response list
             int i = 0;
             foreach(var msg in messages_from_current_chat)
             {
@@ -125,6 +125,7 @@ namespace ReenbitMessenger.Pages
 
             Response_list=Response_list.OrderBy(x => x.time_sent).ToList();
 
+            //Create AJAX response list paginated
             foreach (var item in Response_list)
             {
                 if (i>=msg_from && i <= msg_to)
@@ -137,6 +138,8 @@ namespace ReenbitMessenger.Pages
             return new JsonResult(Response_list_paged);
         }
 
+
+        //AJAX-handler function that sense message to chosen chat
         public async Task<JsonResult> OnPostSendMessage(string msg,string author_id,string chat_id)
         {
             
@@ -144,12 +147,12 @@ namespace ReenbitMessenger.Pages
 
             db.Messages.Add(new_msg);
             db.SaveChanges();
-            //Console.WriteLine('{' + msg + '}' + author_id + chat_id+" - saved");
-
 
             return new JsonResult(null);
         }
 
+
+        //AJAX-handler function that edits chosen message
         public async Task<JsonResult> OnPostEditMessage(string msg_id,string msg_new_text)
         {
             Messages edited_msg = db.Messages.Where(x => x.Id == int.Parse(msg_id)).FirstOrDefault();
@@ -165,15 +168,18 @@ namespace ReenbitMessenger.Pages
         }
 
 
+        //AJAX-handler function that deletes chosen message
         public async Task<JsonResult> OnPostDeleteMessage(string msg_id)
         {
             db.Messages.Remove(db.Messages.Where(x=>x.Id==int.Parse(msg_id)).FirstOrDefault());
             db.SaveChanges();
-            Console.WriteLine(msg_id + " deleted");
+            //Console.WriteLine(msg_id + " deleted");
 
             return new JsonResult(null);
         }
 
+
+        //AJAX-handler function that replies to chosen message
         public async Task<JsonResult> OnPostReplyToMessage(string msg_id,string msg_text,string author_id)
         {
             Messages message_original = db.Messages.Where(x=>x.Id== int.Parse(msg_id)).FirstOrDefault(); 
@@ -182,19 +188,19 @@ namespace ReenbitMessenger.Pages
             db.SaveChanges();
             return new JsonResult(null);
         }
-         public async Task<JsonResult> OnPostPaginationFunc(int chat_id)
+
+        //AJAX-handler function that allows to count num of messages in chat for furhter usage in pagination
+        public async Task<JsonResult> OnPostPaginationFunc(int chat_id)
         {
             List<Messages> messages_from_current_chat = new List<Messages>();
             messages_from_current_chat = db.Messages.Where(x => x.Chat_Id == chat_id).ToList();
             KeyValuePair<string, string> map_ = new KeyValuePair<string, string>(key: "len", value: messages_from_current_chat.Count().ToString());
-
-
-
-
-
             return new JsonResult(messages_from_current_chat.Count());
         }
-          public async Task<JsonResult> OnPostGetNumOfChatUsers(int chat_id)
+
+
+        //AJAX-handler function that chooses whether to show placeholder chat avatar(if >2 users in chat) or opponent user avatat (if 2 users in chat)
+        public async Task<JsonResult> OnPostGetNumOfChatUsers(int chat_id)
         {
             string current_user_id = Request.Cookies["Current_user_id"];
 
@@ -216,8 +222,7 @@ namespace ReenbitMessenger.Pages
                 {
                     if (item.ChatId == chat_id && item.UserId != int.Parse(current_user_id))
                     {
-                        
-                       
+                                             
                         User user = db.Users.Where(x=>x.Id==item.UserId).FirstOrDefault();
                         opponent_image = user.UserAvatarImage;
                         opponent_name= user.Name+" "+user.Surname;
@@ -239,16 +244,19 @@ namespace ReenbitMessenger.Pages
             return new JsonResult(info);
         }
 
+        //AJAX-handler function that returns user name by user id
         public async Task<JsonResult> OnPostGetUserNameById(int user_id)
         {
             string name = db.Users.Where(x => x.Id == user_id).FirstOrDefault().Name + " " + db.Users.Where(x => x.Id == user_id).FirstOrDefault().Surname;
             return new JsonResult(name);
         }
 
+
+        //AJAX-handler function that creates new message room (if user presses "send dm" in the popup)
         public async Task<JsonResult> OnPostSendDM(int opponent_id)
         {
             
-
+            //Firstly we check whether DM room with this opponent already exists
             int existing_chat_to_return = 0;
             foreach (var item in db.UsersChats)
             {
@@ -278,7 +286,7 @@ namespace ReenbitMessenger.Pages
             }
 
 
-            Console.WriteLine(existing_chat_to_return + "!!!!");
+            //If DM chat does not eixst - then it is created and saved to DB
             if (existing_chat_to_return == 0)
             {
                 Chats new_chat = new Chats() { ChatName = "DirectChat(" + opponent_id + "," + Request.Cookies["Current_user_id"] + ")" };
@@ -290,19 +298,22 @@ namespace ReenbitMessenger.Pages
                 db.SaveChanges();
 
                 existing_chat_to_return = new_chat.Id;
-                Console.WriteLine("TTTT" + db.Chats.Where(x => x.ChatName == new_chat.ChatName).FirstOrDefault().ChatName);
+                //Console.WriteLine("TTTT" + db.Chats.Where(x => x.ChatName == new_chat.ChatName).FirstOrDefault().ChatName);
             }
 
             return new JsonResult(existing_chat_to_return);
         }
 
 
+        //Default POST handler
          public IActionResult OnPost()
         {
             Console.WriteLine("POST");
             return RedirectToPage("Messenger/?id=1");
         }
 
+
+        //Default GET handler
             public IActionResult OnGet(int id)
             
         {
@@ -313,7 +324,7 @@ namespace ReenbitMessenger.Pages
             
             current_user=Users.Where(x => x.Id == id).FirstOrDefault();
             Console.ForegroundColor= ConsoleColor.Green;
-            Console.WriteLine("GET ON MAIN PAGE ["+id+"]");
+            //Console.WriteLine("GET ON MAIN PAGE ["+id+"]");
             ViewData["current_user_avatar"] = current_user.UserAvatarImage;
             ViewData["current_user_name"] = current_user.Name+" "+current_user.Surname;
          
@@ -327,18 +338,7 @@ namespace ReenbitMessenger.Pages
             return Page();
              
         }
-
-        public void OnPostUpdate()
-        {
-            Users = db.Users.ToList();
-            Chats = db.Chats.ToList();
-            Customers = db.Customers.ToList();
-            /*foreach (var item in Customers)
-            {
-                item.CustomerName += " Changed";
-            }*/
-            db.SaveChanges();
-        }
+      
 
         
 

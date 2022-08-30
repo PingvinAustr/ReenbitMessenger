@@ -37,7 +37,7 @@
 
                 @foreach (var item in @Model.GroupChatsOfThisUser)
                 {
-                    Console.WriteLine("[[[[" + @Model.GroupChatsOfThisUser.Count);
+                   
                     <div class="chat-item" onclick="OpenChat(@item.Id,null)">
                         <div class="chat-item-left">
                         <img src="~/user_avatars/chat.png"/>    
@@ -76,14 +76,13 @@
            <div class="left-part-direct custom-scrollbar">
                @foreach (var item in @Model.DirectChatsOfThisUser)
                 {
-                    Console.WriteLine("[[[[++" + @Model.DirectChatsOfThisUser.Count);
-                    Console.WriteLine(item.ChatName);
+                    
                     <div class="chat-item" onclick="OpenChat(@item.Id,null)" >
                         <div class="chat-item-left">
 
                             @{
                                 var current_friend = Model.Users.Where(x => (x.Name + " " + x.Surname) == item.ChatName).FirstOrDefault();
-                                Console.WriteLine(current_friend.UserAvatarImage);
+                               
                             }   
                             
                             <img src="~/user_avatars/@current_friend.UserAvatarImage"/>    

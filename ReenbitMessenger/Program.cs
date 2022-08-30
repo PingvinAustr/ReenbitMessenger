@@ -20,7 +20,7 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+   
     app.UseHsts();
 }
 
@@ -34,6 +34,12 @@ AddCustomerData(app);
 app.MapRazorPages();
 
 app.Run();
+
+
+
+
+
+
 static void AddCustomerData(WebApplication app)
 {
     var scope = app.Services.CreateScope();
@@ -125,20 +131,7 @@ static void AddCustomerData(WebApplication app)
     UsersChats userschats_direct4 = new UsersChats() { UserId = 6, User = user6, ChatId = 4, Chat = direct_chat4 }; //Svyatoslav - 4 - DM    
 
 
-    /*
-    UsersChats userschats_direct1 = new UsersChats() { UserId=1,User=user1,ChatId=3,Chat=direct_chat3 }; //Tom - 3 - DM
-    UsersChats userschats_direct2 = new UsersChats() { UserId=2,User=user2,ChatId=3,Chat=direct_chat3 }; //Bob - 3 - DM    
-
-    UsersChats userschats_direct3 = new UsersChats() { UserId = 2, User = user2, ChatId = 4, Chat = direct_chat4 }; //Bob - 4 - DM
-    UsersChats userschats_direct4 = new UsersChats() { UserId = 5, User = user5, ChatId = 4, Chat = direct_chat4 }; //Helen - 4 - DM
-
-    UsersChats userschats_direct5 = new UsersChats() { UserId = 3, User = user3, ChatId = 5, Chat = direct_chat5 }; //Bill - 5 - DM
-    UsersChats userschats_direct6 = new UsersChats() { UserId = 5, User = user5, ChatId = 5, Chat = direct_chat5 }; //Helen - 5 - DM
-
-    UsersChats userschats_direct7 = new UsersChats() { UserId = 3, User = user3, ChatId = 6, Chat = direct_chat6 }; //Bill - 6 - DM
-    UsersChats userschats_direct8 = new UsersChats() { UserId = 1, User = user1, ChatId = 6, Chat = direct_chat6 }; //Tom - 6 - DM
-    */
-
+   
 
     Chats group_all_chat = new Chats
     {
@@ -156,10 +149,7 @@ static void AddCustomerData(WebApplication app)
     {
         ChatName = "DirectChat7"
     };
-    /*
-    UsersChats userschats_direct9 = new UsersChats() { UserId = 1, User = user1, ChatId = 8, Chat = direct_chat7 }; //Tom - 8 - DM
-    UsersChats userschats_direct10 = new UsersChats() { UserId = 4, User = user4, ChatId = 8, Chat = direct_chat7 };//Jack - 8 - DM
-    */
+  
 
 
     UsersChats usersChat1 = new UsersChats(); //Tom - 1 - MathChat (Tom and Helen DM)
@@ -215,21 +205,14 @@ static void AddCustomerData(WebApplication app)
     db.UsersChats.Add(userschats_direct2);
     db.UsersChats.Add(userschats_direct3);
     db.UsersChats.Add(userschats_direct4);
-    /*db.UsersChats.Add(userschats_direct5);
-    db.UsersChats.Add(userschats_direct6);
-    db.UsersChats.Add(userschats_direct7);
-    db.UsersChats.Add(userschats_direct8);*/
-    
+
     db.UsersChats.Add(all_users_chat1);
     db.UsersChats.Add(all_users_chat2);
     db.UsersChats.Add(all_users_chat3);
     db.UsersChats.Add(all_users_chat4);
     db.UsersChats.Add(all_users_chat5);
     db.UsersChats.Add(all_users_chat6);
-    /*
-    db.UsersChats.Add(userschats_direct9);
-    db.UsersChats.Add(userschats_direct10);
-    */
+
    
 
     db.SaveChanges();
@@ -319,21 +302,6 @@ static void AddCustomerData(WebApplication app)
     db.Messages.Add(message3);
     db.Messages.Add(message4);
     db.SaveChanges();
-    /*
-    foreach (Chats chat in db.Chats)
-    {
-        Console.WriteLine("Chat - " + chat.ChatName + " [");
-
-        var me = db.UsersChats.Where(x => x.Chat == chat).ToList();
-        foreach (var user in me)
-        {
-            Console.Write(user.User.Name + " ");
-        }
-        Console.Write("]");
-    }
-    */
-
-
 
 
 }
