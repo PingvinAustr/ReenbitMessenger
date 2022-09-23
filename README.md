@@ -1,4 +1,3 @@
-# Reenbit test task - by Chushenko Yaroslav
 ## .NET Core Messenger
 ### Using:
 + .NET Core
